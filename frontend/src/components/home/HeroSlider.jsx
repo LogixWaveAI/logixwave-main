@@ -18,11 +18,76 @@ import {
   FaLaptopCode,
   FaArrowDown,
 } from "react-icons/fa";
-import axios from "axios";
 
 // Styles
 import "swiper/css";
 import "swiper/css/effect-creative";
+
+// --- 1. HARDCODED STATIC DATA (Exact from Screenshots) ---
+const TEAM_DATA = [
+  {
+    _id: "1",
+    name: "Parth Kachariya",
+    role: "Founder & CEO | Principal AI Architect",
+    desc: "Founder of LogixWaveAI. I architect scalable cross-platform ecosystems with MERN, Next.js, and React Native. Spearheading advanced AI solutions using GenAI, RAG Agents, and Deep Learning pipelines to empower businesses.",
+    image: "/parth.png",
+    colorTheme: "cyan",
+    github: "https://github.com/KpCodeTech",
+    linkedin: "https://www.linkedin.com/in/parth-kachariya-12a423383/",
+    // Custom Badges to match screenshot exactly
+    customBadges: [
+        { icon: <FaCode />, text: "Full Stack", position: "top-[10%] left-2 md:top-[20%] md:left-[10%]", delay: 0.5 },
+        { icon: <FaBrain />, text: "AI Architect", position: "top-[5%] right-2 md:top-[15%] md:right-[10%]", delay: 0.7 },
+        { icon: <FaDatabase />, text: "Data Science", position: "bottom-[20%] right-2 md:bottom-[30%] md:right-[5%]", delay: 0.9 },
+        { icon: <FaMobileAlt />, text: "Mobile Apps", position: "bottom-[15%] left-2 md:bottom-[20%] md:left-[10%]", delay: 1.0 }
+    ]
+  },
+  {
+    _id: "2",
+    name: "Pal Kaswala",
+    role: "Co-Founder & COO | Lead AI Engineer",
+    desc: "Co-Founder & COO at LogixWaveAI. I bridge the gap between technical strategy and operational excellence. Specializing in robust MERN architectures and Python-based AI automation to deliver scalable, high-performance solutions.",
+    image: "/pal.png", // NOTE: File name is pal1.png in your public folder
+    colorTheme: "purple",
+    github: "https://github.com/pal4706",
+    linkedin: "https://www.linkedin.com/in/pal-kaswala-9a0696265/",
+    customBadges: [
+        { icon: <FaCode />, text: "Full Stack", position: "top-[10%] left-2 md:top-[20%] md:left-[10%]", delay: 0.5 },
+        { icon: <FaBrain />, text: "AI Architect", position: "top-[5%] right-2 md:top-[15%] md:right-[10%]", delay: 0.7 },
+        { icon: <FaDatabase />, text: "Data Science", position: "bottom-[20%] right-2 md:bottom-[30%] md:right-[5%]", delay: 0.9 }
+    ]
+  },
+  {
+    _id: "3",
+    name: "Yashvi Nakrani",
+    role: "Co-Founder & CMO | Senior AI Engineer",
+    desc: "Co-Founder & CMO at LogixWaveAI. Driving brand strategy and client growth while leveraging deep technical expertise in AI and MERN stack. I focus on aligning innovative tech solutions with market needs to deliver exceptional value.",
+    image: "/yashvi.png",
+    colorTheme: "emerald",
+    github: "https://github.com/yashvi-24",
+    linkedin: "https://www.linkedin.com/in/yashvi-nakrani-8aa4333a7/",
+    customBadges: [
+        { icon: <FaCode />, text: "Full Stack", position: "top-[10%] left-2 md:top-[20%] md:left-[10%]", delay: 0.5 },
+        { icon: <FaBrain />, text: "AI Architect", position: "top-[5%] right-2 md:top-[15%] md:right-[10%]", delay: 0.7 },
+        { icon: <FaDatabase />, text: "Data Science", position: "bottom-[20%] right-2 md:bottom-[30%] md:right-[5%]", delay: 0.9 }
+    ]
+  },
+  {
+    _id: "4",
+    name: "Jay Devganiya",
+    role: "Co-Founder & CTO | Principal UI/UX Architect",
+    desc: "Co-Founder & CTO at LogixWaveAI. Leading the intersection of design and technology. I architect user-centric digital experiences by blending advanced UI/UX principles with scalable MERN stack development to deliver pixel-perfect solutions.",
+    image: "/jay.png",
+    colorTheme: "red",
+    github: "https://github.com/jaydevganiya18",
+    linkedin: "http://linkedin.com/in/jay-devganiya-86a293303/",
+    customBadges: [
+        { icon: <FaCode />, text: "Full Stack", position: "top-[10%] left-2 md:top-[20%] md:left-[10%]", delay: 0.5 },
+        { icon: <FaBrain />, text: "AI Architect", position: "top-[5%] right-2 md:top-[15%] md:right-[10%]", delay: 0.7 },
+        { icon: <FaDatabase />, text: "Data Science", position: "bottom-[20%] right-2 md:bottom-[30%] md:right-[5%]", delay: 0.9 }
+    ]
+  },
+];
 
 // --- THEME CONFIG ---
 const getThemeColors = (color) => {
@@ -136,8 +201,8 @@ const MagneticButton = ({ children, className, onClick, href }) => {
 };
 
 const HeroSlider = () => {
-  const [members, setMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Use Static Data
+  const members = TEAM_DATA;
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -145,118 +210,11 @@ const HeroSlider = () => {
   const bgGradient = useMotionTemplate`radial-gradient(800px circle at ${mouseX}px ${mouseY}px, rgba(20, 20, 30, 0.4), transparent 80%)`;
   const spotlight = useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(255,255,255,0.03), transparent 80%)`;
 
-  useEffect(() => {
-    const fetchTeam = async () => {
-      try {
-        const { data } = await axios.get(
-          "https://logixwave-main-1.onrender.com/api/members",
-        );
-        setMembers(data);
-      } catch (error) {
-        console.error("API Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTeam();
-  }, []);
-
   const handleMouseMove = (e) => {
     const { clientX, clientY } = e;
     mouseX.set(clientX);
     mouseY.set(clientY);
   };
-
-  // --- ORIGINAL BADGE LOGIC RESTORED ---
-  const getMemberBadges = (member, theme) => {
-    const badges = [];
-    const searchStr = `${member.role || ""} ${member.desc || ""}`.toLowerCase();
-
-    // 1. WEB / MERN
-    if (
-      searchStr.includes("mern") ||
-      searchStr.includes("full") ||
-      searchStr.includes("web") ||
-      searchStr.includes("react") ||
-      searchStr.includes("node") ||
-      searchStr.includes("javascript")
-    ) {
-      badges.push({
-        icon: <FaCode />,
-        text: "Full Stack",
-        position: "top-[10%] left-2 md:top-[20%] md:left-[10%]",
-        delay: 0.5,
-      });
-    }
-
-    // 2. AI / DATA
-    if (
-      searchStr.includes("ai") ||
-      searchStr.includes("data") ||
-      searchStr.includes("ml") ||
-      searchStr.includes("intelligence") ||
-      searchStr.includes("python")
-    ) {
-      badges.push({
-        icon: <FaBrain />,
-        text: "AI Architect",
-        position: "top-[5%] right-2 md:top-[15%] md:right-[10%]",
-        delay: 0.7,
-      });
-      badges.push({
-        icon: <FaDatabase />,
-        text: "Data Science",
-        position: "bottom-[20%] right-2 md:bottom-[30%] md:right-[5%]",
-        delay: 0.9,
-      });
-    }
-    // Fallback: UI/UX
-    else if (
-      badges.length > 0 &&
-      (searchStr.includes("ui") ||
-        searchStr.includes("ux") ||
-        searchStr.includes("frontend") ||
-        searchStr.includes("design"))
-    ) {
-      badges.push({
-        icon: <FaLaptopCode />,
-        text: "Modern UI",
-        position: "top-[5%] right-2 md:top-[15%] md:right-[10%]",
-        delay: 0.8,
-      });
-    }
-
-    // 3. MOBILE APPS
-    if (
-      searchStr.includes("mobile") ||
-      searchStr.includes("android") ||
-      searchStr.includes("ios") ||
-      searchStr.includes("flutter") ||
-      searchStr.includes("react native") ||
-      searchStr.includes("swift") ||
-      searchStr.includes("kotlin")
-    ) {
-      const isRightCrowded =
-        searchStr.includes("ai") || searchStr.includes("data");
-      badges.push({
-        icon: <FaMobileAlt />,
-        text: "Mobile Apps",
-        position: isRightCrowded
-          ? "bottom-[15%] left-2 md:bottom-[20%] md:left-[10%]"
-          : "bottom-[20%] right-2 md:bottom-[30%] md:right-[5%]",
-        delay: 1.0,
-      });
-    }
-
-    return badges;
-  };
-
-  if (loading)
-    return (
-      <div className="h-[100dvh] bg-[#020617] flex items-center justify-center font-mono text-cyan-500 animate-pulse tracking-[0.3em] text-sm">
-        SYSTEM_INITIALIZING...
-      </div>
-    );
 
   return (
     <section
@@ -273,8 +231,7 @@ const HeroSlider = () => {
       />
 
       <div className="absolute inset-0 z-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] pointer-events-none"></div>
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none"></div>
-
+      
       <Swiper
         modules={[Autoplay, EffectCreative]}
         effect="creative"
@@ -284,28 +241,22 @@ const HeroSlider = () => {
         }}
         slidesPerView={1}
         speed={1000}
-        autoplay={{ delay: 10000, disableOnInteraction: false }}
+        autoplay={{ delay: 8000, disableOnInteraction: false }}
         className="h-full w-full z-10"
-        onSlideChange={(swiper) => {
-          if (swiper.activeIndex === 0) {
-            swiper.params.autoplay.delay = 10000;
-          } else {
-            swiper.params.autoplay.delay = 5000;
-          }
-        }}
       >
         {members.map((member) => {
           const theme = getThemeColors(member.colorTheme);
-          const fullName = member.name || "Member";
+          const fullName = member.name;
           const firstName = fullName.split(" ")[0];
           const lastName = fullName.split(" ").slice(1).join(" ");
-          const badges = getMemberBadges(member, theme);
+          
+          // Use Custom Badges from Static Data
+          const badges = member.customBadges || [];
 
           return (
             <SwiperSlide key={member._id}>
               {({ isActive }) => (
                 <div className="relative w-full h-full flex items-center lg:overflow-hidden overflow-y-auto overflow-x-hidden">
-                  {/* --- FIX: Added lg:pb-24 to push content UP on Laptop --- */}
                   <div className="container mx-auto px-4 sm:px-6 h-full flex flex-col-reverse lg:flex-row items-center justify-center relative pb-32 pt-0 lg:pt-0 lg:pb-24">
                     {/* --- LEFT: TYPOGRAPHY --- */}
                     <div className="w-full lg:w-[45%] z-40 flex flex-col justify-end lg:justify-center items-center lg:items-start text-center lg:text-left h-auto lg:h-full mt-[-20px] lg:mt-0 relative">
@@ -343,8 +294,6 @@ const HeroSlider = () => {
                         {/* NAME */}
                         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[7.5rem] font-black leading-tight tracking-tighter mb-0 relative select-none pb-16">
                           <span
-                            // 👇 UPDATE 1: Mobile pe 'text-white' aur 'opacity-100' kar diya (Solid dikhega)
-                            // Desktop (md) pe wapas 'text-transparent' aur 'opacity-20' (Outline style) rahega
                             className="block text-white md:text-transparent bg-clip-text opacity-100 md:opacity-20"
                             style={{
                               WebkitTextStroke: `1px rgba(255,255,255,1)`,
@@ -357,8 +306,6 @@ const HeroSlider = () => {
                             )}
                           </span>
                           <span
-                            // 👇 UPDATE 2: '-translate-y-2' hata diya mobile se, taaki naam overlap na kare
-                            // Sirf 'md' (Desktop) se upar overlap karega
                             className={`block bg-clip-text text-transparent bg-gradient-to-r ${theme.gradient} drop-shadow-[0_0_30px_rgba(0,0,0,0.4)] transform md:-translate-y-2 lg:-translate-y-4 relative`}
                           >
                             {lastName}
@@ -373,13 +320,12 @@ const HeroSlider = () => {
                         {/* BUTTONS */}
                         <div className="flex flex-wrap gap-3 md:gap-4 lg:gap-5 justify-center lg:justify-start items-center w-full px-1 pb-10 lg:pb-0">
                           <a
-                            href="/brochure.pdf" // ✅ Seedha public folder se uthayega
+                            href="/brochure.pdf"
                             download="LogixWaveAI_Brochure.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-block"
                           >
-                            {/* Magnetic Button ab sirf design ke liye hai */}
                             <MagneticButton
                               className={`group relative px-6 py-3 md:px-7 md:py-3.5 lg:px-8 lg:py-4 rounded-full bg-white text-black font-bold overflow-hidden cursor-pointer ${theme.shadow} shadow-lg shrink-0`}
                             >
@@ -393,7 +339,7 @@ const HeroSlider = () => {
                           </a>
 
                           <div className="flex gap-3 shrink-0">
-                            {member.github && (
+                            {member.github && member.github !== '#' && (
                               <MagneticButton
                                 href={member.github}
                                 className="w-10 h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-slate-900 border border-white/10 text-white hover:bg-white hover:text-black transition-colors cursor-pointer"
@@ -401,7 +347,7 @@ const HeroSlider = () => {
                                 <FaGithub size={18} className="md:w-5 md:h-5" />
                               </MagneticButton>
                             )}
-                            {member.linkedin && (
+                            {member.linkedin && member.linkedin !== '#' && (
                               <MagneticButton
                                 href={member.linkedin}
                                 className="w-10 h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-slate-900 border border-white/10 text-white hover:bg-[#0077b5] hover:border-[#0077b5] hover:text-white transition-colors cursor-pointer"
@@ -455,6 +401,7 @@ const HeroSlider = () => {
                           className={`absolute top-[25%] lg:top-[25%] left-1/2 -translate-x-1/2 w-[200px] h-[200px] md:w-[350px] md:h-[350px] lg:w-[500px] lg:h-[500px] bg-gradient-to-tr ${theme.gradient} opacity-20 rounded-full blur-[60px] md:blur-[100px] lg:blur-[120px]`}
                         ></div>
 
+                        {/* --- FINAL FIXED IMAGE --- */}
                         <img
                           src={member.image}
                           alt={member.name}
