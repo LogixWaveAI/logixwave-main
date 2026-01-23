@@ -37,7 +37,7 @@ const ManageProjects = () => {
 
   const fetchProjects = async () => {
     try {
-      const { data } = await axios.get('https://logixwave-main-1.onrender.com/api/projects');
+      const { data } = await axios.get('http://localhost:5000/api/projects');
       setProjects(data);
     } catch (error) { console.error(error); }
   };
@@ -129,14 +129,14 @@ const ManageProjects = () => {
     try {
       if (editId) {
          // --- UPDATE LOGIC ---
-         await axios.put(`https://logixwave-main-1.onrender.com/api/projects/${editId}`, formData, {
+         await axios.put(`http://localhost:5000/api/projects/${editId}`, formData, {
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
          });
          setMessage('Project Updated Successfully! 🎉');
          setEditId(null);
       } else {
          // --- CREATE LOGIC ---
-         await axios.post('https://logixwave-main-1.onrender.com/api/projects', formData, {
+         await axios.post('http://localhost:5000/api/projects', formData, {
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
          });
          setMessage('Project Added Successfully! 🚀');
@@ -153,7 +153,7 @@ const ManageProjects = () => {
   const handleDelete = async (id) => {
       if (!window.confirm('Delete project?')) return;
       try {
-          await axios.delete(`https://logixwave-main-1.onrender.com/api/projects/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+          await axios.delete(`http://localhost:5000/api/projects/${id}`, { headers: { Authorization: `Bearer ${token}` } });
           fetchProjects();
       } catch (err) { console.error(err); }
   };
