@@ -104,12 +104,8 @@ const MagneticButton = ({ children, className, onClick, href }) => {
     const { left, top, width, height } = ref.current.getBoundingClientRect();
     const centerX = left + width / 2;
     const centerY = top + height / 2;
-    const deltaX = clientX - centerX;
-    const deltaY = clientY - centerY;
-    
-    // Thoda limit lagate hain taaki zyada dur na bhage
-    x.set(deltaX * 0.3);
-    y.set(deltaY * 0.3);
+    x.set((clientX - centerX) * 0.3);
+    y.set((clientY - centerY) * 0.3);
   };
 
   const handleMouseLeave = () => {
@@ -153,7 +149,7 @@ const HeroSlider = () => {
     const fetchTeam = async () => {
       try {
         const { data } = await axios.get(
-          "https://logixwave-main.onrender.com/api/members"
+          "https://logixwave-main-1.onrender.com/api/members",
         );
         setMembers(data);
       } catch (error) {
@@ -305,15 +301,11 @@ const HeroSlider = () => {
           const lastName = fullName.split(" ").slice(1).join(" ");
           const badges = getMemberBadges(member, theme);
 
-          // 👇 MAIN LOGIC HERE
-          // Agar Admin ne Image di hai (member.image) -> Use karo
-          // Nahi di, to Public folder se First Name wali PNG uthao
-          const memberImage = member.image || `/${firstName.toLowerCase()}.png`;
-
           return (
             <SwiperSlide key={member._id}>
               {({ isActive }) => (
                 <div className="relative w-full h-full flex items-center lg:overflow-hidden overflow-y-auto overflow-x-hidden">
+                  {/* --- FIX: Added lg:pb-24 to push content UP on Laptop --- */}
                   <div className="container mx-auto px-4 sm:px-6 h-full flex flex-col-reverse lg:flex-row items-center justify-center relative pb-32 pt-0 lg:pt-0 lg:pb-24">
                     {/* --- LEFT: TYPOGRAPHY --- */}
                     <div className="w-full lg:w-[45%] z-40 flex flex-col justify-end lg:justify-center items-center lg:items-start text-center lg:text-left h-auto lg:h-full mt-[-20px] lg:mt-0 relative">
@@ -351,6 +343,8 @@ const HeroSlider = () => {
                         {/* NAME */}
                         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[7.5rem] font-black leading-tight tracking-tighter mb-0 relative select-none pb-16">
                           <span
+                            // 👇 UPDATE 1: Mobile pe 'text-white' aur 'opacity-100' kar diya (Solid dikhega)
+                            // Desktop (md) pe wapas 'text-transparent' aur 'opacity-20' (Outline style) rahega
                             className="block text-white md:text-transparent bg-clip-text opacity-100 md:opacity-20"
                             style={{
                               WebkitTextStroke: `1px rgba(255,255,255,1)`,
@@ -363,6 +357,8 @@ const HeroSlider = () => {
                             )}
                           </span>
                           <span
+                            // 👇 UPDATE 2: '-translate-y-2' hata diya mobile se, taaki naam overlap na kare
+                            // Sirf 'md' (Desktop) se upar overlap karega
                             className={`block bg-clip-text text-transparent bg-gradient-to-r ${theme.gradient} drop-shadow-[0_0_30px_rgba(0,0,0,0.4)] transform md:-translate-y-2 lg:-translate-y-4 relative`}
                           >
                             {lastName}
@@ -377,12 +373,13 @@ const HeroSlider = () => {
                         {/* BUTTONS */}
                         <div className="flex flex-wrap gap-3 md:gap-4 lg:gap-5 justify-center lg:justify-start items-center w-full px-1 pb-10 lg:pb-0">
                           <a
-                            href="/brochure.pdf"
+                            href="/brochure.pdf" // ✅ Seedha public folder se uthayega
                             download="LogixWaveAI_Brochure.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-block"
                           >
+                            {/* Magnetic Button ab sirf design ke liye hai */}
                             <MagneticButton
                               className={`group relative px-6 py-3 md:px-7 md:py-3.5 lg:px-8 lg:py-4 rounded-full bg-white text-black font-bold overflow-hidden cursor-pointer ${theme.shadow} shadow-lg shrink-0`}
                             >
@@ -458,9 +455,8 @@ const HeroSlider = () => {
                           className={`absolute top-[25%] lg:top-[25%] left-1/2 -translate-x-1/2 w-[200px] h-[200px] md:w-[350px] md:h-[350px] lg:w-[500px] lg:h-[500px] bg-gradient-to-tr ${theme.gradient} opacity-20 rounded-full blur-[60px] md:blur-[100px] lg:blur-[120px]`}
                         ></div>
 
-                        {/* 👇 UPDATED IMAGE TAG WITH LOGIC */}
                         <img
-                          src={memberImage}
+                          src={member.image}
                           alt={member.name}
                           className="relative z-10 w-auto h-full max-h-[100%] lg:max-h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]"
                           style={{
@@ -468,11 +464,6 @@ const HeroSlider = () => {
                               "linear-gradient(to bottom, black 85%, transparent 100%)",
                             WebkitMaskImage:
                               "linear-gradient(to bottom, black 85%, transparent 100%)",
-                          }}
-                          // Agar image load fail ho (e.g. spelling mistake in public folder), to hide ho jaye
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                            console.warn("Image not found for:", firstName);
                           }}
                         />
 
