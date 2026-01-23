@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/* === GLOBAL SETTINGS === */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ye 'scrollbar-width: none' Firefox ke liye hai.
+   Ye '-ms-overflow-style: none' IE aur Edge ke liye hai.
+*/
+html, body {
+  overflow-x: hidden; /* Horizontal scroll rokne ke liye */
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  background-color: #020617; /* Slate-950 base color */
+}
+
+/* === HIDE SCROLLBAR (Chrome, Safari, Opera) === 
+   Isse scrollbar invisible ho jayega par scroll kaam karega.
+*/
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Optional: Agar kisi specific element me abhi bhi scrollbar aa raha ho,
+   to ye universal rule ensure karega ki wo bhi na dikhe.
+*/
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
