@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaTrash, FaPlus, FaArrowLeft, FaVideo, FaImage, FaTimes, FaEdit, FaLink } from 'react-icons/fa';
+import { FaTrash, FaArrowLeft, FaImage, FaEdit, FaLink, FaSync } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const ManageProjects = () => {
+  // 👇 API URL: Agar Localhost pe backend chala rahe ho, to is line ko change karo!
+  // const API_URL = 'http://localhost:5000/api/projects'; // Local Testing ke liye
+  const API_URL = 'https://logixwave-main.onrender.com/api/projects'; // Live Server ke liye
+
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState(''); // Error dikhane ke liye
   const [message, setMessage] = useState('');
   
   // Edit Mode
@@ -21,7 +26,7 @@ const ManageProjects = () => {
   const [duration, setDuration] = useState('');
   const [role, setRole] = useState('');
   
-  // NEW: URL Inputs
+  // URL Inputs
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const [galleryUrls, setGalleryUrls] = useState('');
 
@@ -36,13 +41,25 @@ const ManageProjects = () => {
   const [thumbnail, setThumbnail] = useState(null);
   const [galleryFiles, setGalleryFiles] = useState(null);
 
-  // Fetch Projects
+  // Fetch Projects Function
   const fetchProjects = async () => {
+    setLoading(true);
+    setFetchError('');
     try {
-      const { data } = await axios.get('https://logixwave-main.onrender.com/api/projects');
-      setProjects(data);
+      console.log("Fetching projects from:", API_URL);
+      const { data } = await axios.get(API_URL);
+      console.log("Data received:", data);
+      
+      if (Array.isArray(data)) {
+        setProjects(data);
+      } else {
+        setFetchError('Data format incorrect. Expected array.');
+      }
     } catch (error) {
       console.error('Error fetching projects:', error);
+      setFetchError(`Failed to load projects. Is Backend running? (${error.message})`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,7 +88,7 @@ const ManageProjects = () => {
     setSolution(p.solution || '');
     setCodeSnippet(p.codeSnippet || '');
     
-    window.scrollTo(0,0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleReset = () => {
@@ -114,11 +131,9 @@ const ManageProjects = () => {
     formData.append('solution', solution);
     formData.append('codeSnippet', codeSnippet);
 
-    // Send URL Data
     formData.append('thumbnailUrl', thumbnailUrl);
     formData.append('galleryUrls', galleryUrls);
 
-    // Parse Arrays
     const techArray = techStack.split(',').map(t => t.trim()).filter(t => t);
     formData.append('techStack', JSON.stringify(techArray));
 
@@ -131,10 +146,7 @@ const ManageProjects = () => {
     }).filter(s => s !== null);
     formData.append('stats', JSON.stringify(statsArray));
 
-    // Optional Files (Legacy)
-    if (thumbnail) {
-      formData.append('thumbnail', thumbnail);
-    }
+    if (thumbnail) formData.append('thumbnail', thumbnail);
     if (galleryFiles) {
       for (let i = 0; i < galleryFiles.length; i++) {
         formData.append('gallery', galleryFiles[i]);
@@ -145,15 +157,15 @@ const ManageProjects = () => {
       const config = {
         headers: {
             'Content-Type': 'multipart/form-data',
-             Authorization: `Bearer ${localStorage.getItem('adminToken')}` // Token check
+             Authorization: `Bearer ${localStorage.getItem('adminToken')}` 
         }
       };
 
       if (editId) {
-        await axios.put(`https://logixwave-main.onrender.com/api/projects/${editId}`, formData, config);
-        setMessage('Project Updated Successfully! (Check URL stability)');
+        await axios.put(`${API_URL}/${editId}`, formData, config);
+        setMessage('Project Updated Successfully!');
       } else {
-        await axios.post('https://logixwave-main.onrender.com/api/projects', formData, config);
+        await axios.post(API_URL, formData, config);
         setMessage('Project Created Successfully!');
       }
       
@@ -168,14 +180,15 @@ const ManageProjects = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure?')) {
+    if (window.confirm('Are you sure you want to delete this project?')) {
       try {
-        await axios.delete(`https://logixwave-main.onrender.com/api/projects/${id}`, {
+        await axios.delete(`${API_URL}/${id}`, {
              headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
         });
         fetchProjects();
       } catch (error) {
         console.error(error);
+        alert('Failed to delete');
       }
     }
   };
@@ -188,107 +201,119 @@ const ManageProjects = () => {
         </Link>
         
         <h1 className="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
-          {editId ? 'Edit Project' : 'Add New Project'}
+          {editId ? 'Edit Project' : 'Manage Projects'}
         </h1>
 
+        {/* Message Alert */}
         {message && (
             <div className={`p-4 mb-6 rounded-lg ${message.includes('Error') ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
                 {message}
             </div>
         )}
 
+        {/* Error Alert (Fetch Fail) */}
+        {fetchError && (
+            <div className="p-4 mb-6 rounded-lg bg-red-900/50 border border-red-500 text-red-200">
+                <strong>Error:</strong> {fetchError} <br/>
+                <small>Check if your backend is running at: {API_URL}</small>
+                <button onClick={fetchProjects} className="block mt-2 text-sm underline hover:text-white">Try Refreshing</button>
+            </div>
+        )}
+
         <form onSubmit={handleSubmit} className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 space-y-6">
-            
-            {/* --- IMAGE SECTION (IMPORTANT) --- */}
             <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
-                <h3 className="text-xl text-cyan-400 mb-4 flex items-center gap-2"><FaImage /> Media (Use Links for Permanent Fix)</h3>
-                
-                {/* 1. THUMBNAIL URL */}
+                <h3 className="text-xl text-cyan-400 mb-4 flex items-center gap-2"><FaImage /> Media Links</h3>
                 <div className="mb-4">
-                    <label className="block text-sm text-slate-400 mb-1">Thumbnail Image Link (Recommended)</label>
+                    <label className="block text-sm text-slate-400 mb-1">Thumbnail Image Link (Permanent)</label>
                     <div className="flex gap-2">
                         <div className="bg-slate-700 p-3 rounded-l-lg"><FaLink /></div>
                         <input 
                             type="text" 
-                            placeholder="Paste image link here (e.g. https://imgur.com/image.jpg)"
+                            placeholder="e.g. https://logixwaveai.com/projects/my-image.png"
                             className="input-style flex-1"
                             value={thumbnailUrl}
                             onChange={(e) => setThumbnailUrl(e.target.value)}
                         />
                     </div>
-                    <p className="text-[10px] text-slate-500 mt-1">Use a direct link from Imgur, PostImage, or Google Drive for permanent storage.</p>
                 </div>
-
-                {/* 2. GALLERY URLS */}
-                <div>
-                    <label className="block text-sm text-slate-400 mb-1">Gallery Image Links (Comma Separated)</label>
-                    <textarea 
-                        placeholder="https://site.com/img1.jpg, https://site.com/img2.jpg"
-                        className="input-style h-20"
-                        value={galleryUrls}
-                        onChange={(e) => setGalleryUrls(e.target.value)}
-                    ></textarea>
-                </div>
-
-                {/* FILE UPLOAD (OPTIONAL) */}
                 <div className="mt-4 pt-4 border-t border-slate-700">
-                    <label className="block text-sm text-red-400 mb-1">Or Upload File (Temporary - Will Delete on Restart)</label>
+                    <label className="block text-sm text-red-400 mb-1">Or Upload File (Temporary on Render)</label>
                     <input type="file" onChange={(e) => setThumbnail(e.target.files[0])} className="text-sm text-slate-500" />
                 </div>
             </div>
             
-            {/* --- BASIC DETAILS --- */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input type="text" placeholder="Project Title" className="input-style" value={title} onChange={e => setTitle(e.target.value)} required />
                 <select className="input-style" value={category} onChange={e => setCategory(e.target.value)}>
                     <option>Web Dev</option>
                     <option>App Dev</option>
                     <option>AI/ML</option>
-                    <option>Blockchain</option>
+                    <option>Cybersecurity</option>
                 </select>
                 <input type="text" placeholder="Client Name" className="input-style" value={client} onChange={e => setClient(e.target.value)} />
-                <input type="text" placeholder="Duration (e.g. 2 Weeks)" className="input-style" value={duration} onChange={e => setDuration(e.target.value)} />
+                <input type="text" placeholder="Duration" className="input-style" value={duration} onChange={e => setDuration(e.target.value)} />
             </div>
 
-            <textarea placeholder="Short Description" className="input-style h-24" value={description} onChange={e => setDescription(e.target.value)} required></textarea>
+            <textarea placeholder="Description" className="input-style h-24" value={description} onChange={e => setDescription(e.target.value)} required></textarea>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input type="text" placeholder="GitHub Link" className="input-style" value={github} onChange={e => setGithub(e.target.value)} />
                 <input type="text" placeholder="Live Demo Link" className="input-style" value={live} onChange={e => setLive(e.target.value)} />
             </div>
 
-            {/* --- TECH & STATS --- */}
-            <div className="space-y-4">
-                <input type="text" placeholder="Tech Stack (comma separated: React, Node, MongoDB)" className="input-style" value={techStack} onChange={e => setTechStack(e.target.value)} />
-                <input type="text" placeholder="Stats (e.g. Users: 100+, Speed: Fast)" className="input-style" value={stats} onChange={e => setStats(e.target.value)} />
-            </div>
+            <input type="text" placeholder="Tech Stack (comma separated)" className="input-style" value={techStack} onChange={e => setTechStack(e.target.value)} />
 
             <button type="submit" disabled={loading} className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold py-4 rounded-xl transition-all">
-                {loading ? 'Saving...' : (editId ? 'Update Project' : 'Create Project')}
+                {loading ? 'Processing...' : (editId ? 'Update Project' : 'Create Project')}
             </button>
-
+            
             {editId && (
                 <button type="button" onClick={handleReset} className="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-xl transition-all">
-                    Cancel Edit
+                    Cancel Edit (Create New)
                 </button>
             )}
         </form>
 
-        {/* --- LIST --- */}
+        {/* --- LIST SECTION --- */}
         <div className="mt-12 space-y-4">
-            <h2 className="text-2xl font-bold text-slate-300">Existing Projects</h2>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-slate-300">Existing Projects ({projects.length})</h2>
+                <button onClick={fetchProjects} className="flex items-center gap-2 text-cyan-400 hover:text-white">
+                    <FaSync className={loading ? 'animate-spin' : ''} /> Refresh List
+                </button>
+            </div>
+
+            {loading && <p className="text-center text-slate-500">Loading projects...</p>}
+            
+            {!loading && projects.length === 0 && !fetchError && (
+                <div className="p-8 text-center bg-slate-800/30 rounded-xl border border-dashed border-slate-700">
+                    <p className="text-slate-400">No projects found. Add one above!</p>
+                </div>
+            )}
+
             {projects.map(p => (
-                <div key={p._id} className="bg-slate-800/30 p-4 rounded-xl flex items-center justify-between border border-slate-700">
+                <div key={p._id} className="bg-slate-800/30 p-4 rounded-xl flex items-center justify-between border border-slate-700 hover:border-cyan-500/30 transition-all">
                     <div className="flex items-center gap-4">
-                        <img src={p.thumbnail || p.image} alt={p.title} className="w-16 h-16 rounded-lg object-cover" />
+                        {/* Image Fallback Check */}
+                        <div className="w-16 h-16 rounded-lg bg-slate-900 overflow-hidden flex-shrink-0">
+                             {p.thumbnail || p.image ? (
+                                <img src={p.thumbnail || p.image} alt={p.title} className="w-full h-full object-cover" onError={(e) => e.target.style.display='none'} />
+                             ) : (
+                                <div className="w-full h-full flex items-center justify-center text-slate-600"><FaImage /></div>
+                             )}
+                        </div>
                         <div>
-                            <h3 className="font-bold text-white">{p.title}</h3>
-                            <span className="text-xs text-slate-500">{p.category}</span>
+                            <h3 className="font-bold text-white text-lg">{p.title}</h3>
+                            <span className="text-xs text-cyan-400 px-2 py-1 bg-cyan-900/20 rounded-full">{p.category}</span>
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        <button onClick={() => handleEditClick(p)} className="p-3 bg-slate-800 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white"><FaEdit /></button>
-                        <button onClick={() => handleDelete(p._id)} className="p-3 bg-slate-800 text-red-500 rounded-lg hover:bg-red-600 hover:text-white"><FaTrash /></button>
+                        <button onClick={() => handleEditClick(p)} className="p-3 bg-slate-800 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white border border-slate-700">
+                            <FaEdit />
+                        </button>
+                        <button onClick={() => handleDelete(p._id)} className="p-3 bg-slate-800 text-red-500 rounded-lg hover:bg-red-600 hover:text-white border border-slate-700">
+                            <FaTrash />
+                        </button>
                     </div>
                 </div>
             ))}
