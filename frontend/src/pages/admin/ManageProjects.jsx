@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaTrash, FaPlus, FaArrowLeft, FaVideo, FaImage, FaTimes, FaEdit } from 'react-icons/fa'; // FaEdit add kiya
+import { FaTrash, FaPlus, FaArrowLeft, FaVideo, FaImage, FaTimes, FaEdit, FaLink } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const ManageProjects = () => {
@@ -8,10 +8,10 @@ const ManageProjects = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   
-  // Edit Mode State
+  // Edit Mode
   const [editId, setEditId] = useState(null);
 
-  // Form State
+  // Form Fields
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Web Dev');
   const [description, setDescription] = useState('');
@@ -20,6 +20,11 @@ const ManageProjects = () => {
   const [client, setClient] = useState('');
   const [duration, setDuration] = useState('');
   const [role, setRole] = useState('');
+  
+  // NEW: URL Inputs
+  const [thumbnailUrl, setThumbnailUrl] = useState('');
+  const [galleryUrls, setGalleryUrls] = useState('');
+
   const [techStack, setTechStack] = useState('');
   const [features, setFeatures] = useState('');
   const [stats, setStats] = useState('');
@@ -27,79 +32,68 @@ const ManageProjects = () => {
   const [solution, setSolution] = useState('');
   const [codeSnippet, setCodeSnippet] = useState('');
 
-  // File States
+  // Old File Inputs (Backup)
   const [thumbnail, setThumbnail] = useState(null);
-  const [galleryFiles, setGalleryFiles] = useState([]); 
+  const [galleryFiles, setGalleryFiles] = useState(null);
 
-  const token = localStorage.getItem('token');
-
-  useEffect(() => { fetchProjects(); }, []);
-
+  // Fetch Projects
   const fetchProjects = async () => {
     try {
-      const { data } = await axios.get('https://logixwave-main-1.onrender.com/api/projects');
+      const { data } = await axios.get('https://logixwave-main.onrender.com/api/projects');
       setProjects(data);
-    } catch (error) { console.error(error); }
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    }
   };
 
-  // --- EDIT CLICK HANDLER ---
-  const handleEditClick = (project) => {
-    setEditId(project._id);
-    setTitle(project.title);
-    setCategory(project.category);
-    setDescription(project.description);
-    setGithub(project.github || '');
-    setLive(project.live || '');
-    setClient(project.client || '');
-    setDuration(project.duration || '');
-    setRole(project.role || '');
-    setChallenge(project.challenge || '');
-    setSolution(project.solution || '');
-    setCodeSnippet(project.codeSnippet || '');
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
-    // Arrays ko wapas String format me convert karna padega form ke liye
-    if (project.techStack) setTechStack(project.techStack.join(', '));
-    if (project.features) setFeatures(project.features.join('\n'));
+  const handleEditClick = (p) => {
+    setEditId(p._id);
+    setTitle(p.title);
+    setCategory(p.category);
+    setDescription(p.description);
+    setGithub(p.github);
+    setLive(p.live);
+    setClient(p.client || '');
+    setDuration(p.duration || '');
+    setRole(p.role || '');
     
-    // Stats Array of Objects -> String ("Label: Value")
-    if (project.stats) {
-        const statsString = project.stats.map(s => `${s.label}: ${s.value}`).join('\n');
-        setStats(statsString);
-    }
-
-    // Files reset (Edit me purani files backend handle karega, yahan naye select honge)
-    setThumbnail(null);
-    setGalleryFiles([]);
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setMessage(`Editing: ${project.title}`);
+    // Set URL directly
+    setThumbnailUrl(p.thumbnail || '');
+    
+    setTechStack(p.techStack ? p.techStack.join(', ') : '');
+    setFeatures(p.features ? p.features.join(' | ') : '');
+    setStats(p.stats ? p.stats.map(s => `${s.label}:${s.value}`).join(', ') : '');
+    setChallenge(p.challenge || '');
+    setSolution(p.solution || '');
+    setCodeSnippet(p.codeSnippet || '');
+    
+    window.scrollTo(0,0);
   };
 
-  const handleCancelEdit = () => {
+  const handleReset = () => {
     setEditId(null);
-    resetForm();
-    setMessage('');
-  };
-
-  const resetForm = () => {
-    setTitle(''); setCategory('Web Dev'); setDescription('');
-    setGithub(''); setLive(''); setClient(''); setDuration(''); setRole('');
-    setTechStack(''); setFeatures(''); setStats(''); setChallenge(''); setSolution(''); setCodeSnippet('');
-    setThumbnail(null); setGalleryFiles([]);
-  };
-
-  const handleGalleryChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    if (galleryFiles.length + selectedFiles.length > 5) {
-        alert(`Limit exceeded! You can only add ${5 - galleryFiles.length} more files.`);
-        return;
-    }
-    setGalleryFiles(prev => [...prev, ...selectedFiles]);
-    e.target.value = "";
-  };
-
-  const removeFile = (index) => {
-    setGalleryFiles(prev => prev.filter((_, i) => i !== index));
+    setTitle('');
+    setCategory('Web Dev');
+    setDescription('');
+    setGithub('');
+    setLive('');
+    setClient('');
+    setDuration('');
+    setRole('');
+    setThumbnailUrl('');
+    setGalleryUrls('');
+    setTechStack('');
+    setFeatures('');
+    setStats('');
+    setChallenge('');
+    setSolution('');
+    setCodeSnippet('');
+    setThumbnail(null);
+    setGalleryFiles(null);
   };
 
   const handleSubmit = async (e) => {
@@ -116,180 +110,191 @@ const ManageProjects = () => {
     formData.append('client', client);
     formData.append('duration', duration);
     formData.append('role', role);
-    formData.append('techStack', techStack);
-    formData.append('features', features);
-    formData.append('stats', stats);
     formData.append('challenge', challenge);
     formData.append('solution', solution);
     formData.append('codeSnippet', codeSnippet);
 
-    if (thumbnail) formData.append('thumbnail', thumbnail);
-    galleryFiles.forEach((file) => formData.append('gallery', file));
+    // Send URL Data
+    formData.append('thumbnailUrl', thumbnailUrl);
+    formData.append('galleryUrls', galleryUrls);
+
+    // Parse Arrays
+    const techArray = techStack.split(',').map(t => t.trim()).filter(t => t);
+    formData.append('techStack', JSON.stringify(techArray));
+
+    const featArray = features.split('|').map(f => f.trim()).filter(f => f);
+    formData.append('features', JSON.stringify(featArray));
+
+    const statsArray = stats.split(',').map(s => {
+      const [label, value] = s.split(':');
+      return label && value ? { label: label.trim(), value: value.trim() } : null;
+    }).filter(s => s !== null);
+    formData.append('stats', JSON.stringify(statsArray));
+
+    // Optional Files (Legacy)
+    if (thumbnail) {
+      formData.append('thumbnail', thumbnail);
+    }
+    if (galleryFiles) {
+      for (let i = 0; i < galleryFiles.length; i++) {
+        formData.append('gallery', galleryFiles[i]);
+      }
+    }
 
     try {
+      const config = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+             Authorization: `Bearer ${localStorage.getItem('adminToken')}` // Token check
+        }
+      };
+
       if (editId) {
-         // --- UPDATE LOGIC ---
-         await axios.put(`https://logixwave-main-1.onrender.com/api/projects/${editId}`, formData, {
-            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
-         });
-         setMessage('Project Updated Successfully! 🎉');
-         setEditId(null);
+        await axios.put(`https://logixwave-main.onrender.com/api/projects/${editId}`, formData, config);
+        setMessage('Project Updated Successfully! (Check URL stability)');
       } else {
-         // --- CREATE LOGIC ---
-         await axios.post('https://logixwave-main-1.onrender.com/api/projects', formData, {
-            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
-         });
-         setMessage('Project Added Successfully! 🚀');
+        await axios.post('https://logixwave-main.onrender.com/api/projects', formData, config);
+        setMessage('Project Created Successfully!');
       }
       
-      resetForm();
+      handleReset();
       fetchProjects();
     } catch (error) {
-      setMessage('Error saving project.');
       console.error(error);
-    } finally { setLoading(false); }
+      setMessage(error.response?.data?.message || 'Error saving project');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async (id) => {
-      if (!window.confirm('Delete project?')) return;
+    if (window.confirm('Are you sure?')) {
       try {
-          await axios.delete(`https://logixwave-main-1.onrender.com/api/projects/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-          fetchProjects();
-      } catch (err) { console.error(err); }
+        await axios.delete(`https://logixwave-main.onrender.com/api/projects/${id}`, {
+             headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
+        });
+        fetchProjects();
+      } catch (error) {
+        console.error(error);
+      }
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 p-6 md:p-12 text-white">
+    <div className="min-h-screen bg-[#020617] text-white p-8 font-mono">
       <div className="max-w-6xl mx-auto">
-        <Link to="/admin/dashboard" className="text-slate-400 mb-8 block"><FaArrowLeft className="inline mr-2"/> Back</Link>
-        <h1 className="text-3xl font-bold mb-8">Manage Projects</h1>
+        <Link to="/admin/dashboard" className="flex items-center gap-2 text-cyan-400 mb-6 hover:text-cyan-300">
+          <FaArrowLeft /> Back to Dashboard
+        </Link>
+        
+        <h1 className="text-3xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
+          {editId ? 'Edit Project' : 'Add New Project'}
+        </h1>
 
-        {/* FORM CONTAINER */}
-        <div className={`p-8 rounded-3xl border mb-12 shadow-2xl transition-colors ${editId ? 'bg-cyan-900/20 border-cyan-500/50' : 'bg-slate-900 border-white/10'}`}>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className={`text-xl font-bold ${editId ? 'text-cyan-400' : 'text-white'}`}>
-                {editId ? `Editing: ${title}` : 'Add New Project'}
-            </h2>
-            {editId && (
-                <button onClick={handleCancelEdit} className="text-red-400 hover:text-red-300 flex items-center gap-2 text-sm">
-                    <FaTimes /> Cancel Edit
-                </button>
-            )}
-          </div>
-          
-          {message && <p className="mb-4 text-green-400 bg-green-900/30 p-3 rounded">{message}</p>}
+        {message && (
+            <div className={`p-4 mb-6 rounded-lg ${message.includes('Error') ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
+                {message}
+            </div>
+        )}
 
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="bg-slate-900/50 p-6 rounded-xl border border-slate-800 space-y-6">
             
-            {/* --- UPLOAD SECTION --- */}
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-slate-950 rounded-2xl border border-slate-800">
+            {/* --- IMAGE SECTION (IMPORTANT) --- */}
+            <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                <h3 className="text-xl text-cyan-400 mb-4 flex items-center gap-2"><FaImage /> Media (Use Links for Permanent Fix)</h3>
                 
-                {/* 1. Main Thumbnail */}
-                <div>
-                    <label className="block text-sm text-cyan-400 mb-2 font-bold uppercase">
-                        {editId ? 'Change Thumbnail (Optional)' : 'Main Thumbnail *'}
-                    </label>
-                    <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={e => setThumbnail(e.target.files[0])} 
-                        className="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-500/10 file:text-cyan-400 hover:file:bg-cyan-500/20 cursor-pointer bg-slate-900 rounded-lg border border-slate-700" 
-                        required={!editId} 
-                    />
-                    {thumbnail && <p className="text-xs text-green-400 mt-2">Selected: {thumbnail.name}</p>}
-                </div>
-
-                {/* 2. Gallery */}
-                <div>
-                    <label className="block text-sm text-purple-400 mb-2 font-bold uppercase">
-                        {editId ? 'Add More Gallery Items' : 'Gallery (Max 5)'}
-                    </label>
-                    
-                    <div className="flex gap-2 mb-3">
+                {/* 1. THUMBNAIL URL */}
+                <div className="mb-4">
+                    <label className="block text-sm text-slate-400 mb-1">Thumbnail Image Link (Recommended)</label>
+                    <div className="flex gap-2">
+                        <div className="bg-slate-700 p-3 rounded-l-lg"><FaLink /></div>
                         <input 
-                            type="file" 
-                            accept="image/*,video/*"
-                            multiple 
-                            onChange={handleGalleryChange} 
-                            disabled={galleryFiles.length >= 5}
-                            className="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-500/10 file:text-purple-400 hover:file:bg-purple-500/20 cursor-pointer bg-slate-900 rounded-lg border border-slate-700 disabled:opacity-50" 
+                            type="text" 
+                            placeholder="Paste image link here (e.g. https://imgur.com/image.jpg)"
+                            className="input-style flex-1"
+                            value={thumbnailUrl}
+                            onChange={(e) => setThumbnailUrl(e.target.value)}
                         />
                     </div>
+                    <p className="text-[10px] text-slate-500 mt-1">Use a direct link from Imgur, PostImage, or Google Drive for permanent storage.</p>
+                </div>
 
-                    <div className="space-y-2">
-                        {galleryFiles.map((file, idx) => (
-                            <div key={idx} className="flex justify-between items-center bg-slate-800 px-3 py-2 rounded text-xs border border-white/5">
-                                <span className="truncate w-4/5 text-slate-300 flex items-center">
-                                    {file.type.startsWith('video') ? <FaVideo className="mr-2 text-pink-400"/> : <FaImage className="mr-2 text-blue-400"/>}
-                                    {file.name}
-                                </span>
-                                <button type="button" onClick={() => removeFile(idx)} className="text-red-400 hover:text-red-200"><FaTimes/></button>
-                            </div>
-                        ))}
-                    </div>
+                {/* 2. GALLERY URLS */}
+                <div>
+                    <label className="block text-sm text-slate-400 mb-1">Gallery Image Links (Comma Separated)</label>
+                    <textarea 
+                        placeholder="https://site.com/img1.jpg, https://site.com/img2.jpg"
+                        className="input-style h-20"
+                        value={galleryUrls}
+                        onChange={(e) => setGalleryUrls(e.target.value)}
+                    ></textarea>
+                </div>
+
+                {/* FILE UPLOAD (OPTIONAL) */}
+                <div className="mt-4 pt-4 border-t border-slate-700">
+                    <label className="block text-sm text-red-400 mb-1">Or Upload File (Temporary - Will Delete on Restart)</label>
+                    <input type="file" onChange={(e) => setThumbnail(e.target.files[0])} className="text-sm text-slate-500" />
                 </div>
             </div>
-
-            {/* Inputs */}
-            <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Project Title *" className="input-style" required />
-            <select value={category} onChange={e => setCategory(e.target.value)} className="input-style">
-                <option>Web Dev</option><option>Mobile App</option><option>AI & Data</option>
-            </select>
-
-            <input value={github} onChange={e => setGithub(e.target.value)} placeholder="GitHub Link" className="input-style" />
-            <input value={live} onChange={e => setLive(e.target.value)} placeholder="Live Demo Link" className="input-style" />
-
-            {/* Text Areas */}
-            <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Short Description *" rows="2" className="md:col-span-2 input-style" required />
-            <input value={client} onChange={e => setClient(e.target.value)} placeholder="Client" className="input-style" />
-            <input value={duration} onChange={e => setDuration(e.target.value)} placeholder="Duration" className="input-style" />
-            <input value={role} onChange={e => setRole(e.target.value)} placeholder="My Role" className="input-style" />
-            <input value={techStack} onChange={e => setTechStack(e.target.value)} placeholder="Tech Stack (Comma separated)" className="md:col-span-2 input-style" />
             
-            <textarea value={stats} onChange={e => setStats(e.target.value)} placeholder="Stats (Label: Value per line)" rows="3" className="md:col-span-2 input-style font-mono text-sm" />
-            <textarea value={features} onChange={e => setFeatures(e.target.value)} placeholder="Features (New line separated)" rows="3" className="md:col-span-2 input-style" />
-            <textarea value={challenge} onChange={e => setChallenge(e.target.value)} placeholder="Challenge" rows="2" className="md:col-span-2 input-style" />
-            <textarea value={solution} onChange={e => setSolution(e.target.value)} placeholder="Solution" rows="2" className="md:col-span-2 input-style" />
-            <textarea value={codeSnippet} onChange={e => setCodeSnippet(e.target.value)} placeholder="Code Snippet (Optional)" rows="4" className="md:col-span-2 input-style font-mono text-xs" />
+            {/* --- BASIC DETAILS --- */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input type="text" placeholder="Project Title" className="input-style" value={title} onChange={e => setTitle(e.target.value)} required />
+                <select className="input-style" value={category} onChange={e => setCategory(e.target.value)}>
+                    <option>Web Dev</option>
+                    <option>App Dev</option>
+                    <option>AI/ML</option>
+                    <option>Blockchain</option>
+                </select>
+                <input type="text" placeholder="Client Name" className="input-style" value={client} onChange={e => setClient(e.target.value)} />
+                <input type="text" placeholder="Duration (e.g. 2 Weeks)" className="input-style" value={duration} onChange={e => setDuration(e.target.value)} />
+            </div>
 
-            <button type="submit" disabled={loading} className={`md:col-span-2 w-full py-4 rounded-xl font-bold text-lg transition-all ${editId ? 'bg-green-600 hover:bg-green-500' : 'bg-cyan-600 hover:bg-cyan-500'}`}>
-                {loading ? 'Processing...' : (editId ? 'Update Project' : '🚀 Launch Project')}
+            <textarea placeholder="Short Description" className="input-style h-24" value={description} onChange={e => setDescription(e.target.value)} required></textarea>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input type="text" placeholder="GitHub Link" className="input-style" value={github} onChange={e => setGithub(e.target.value)} />
+                <input type="text" placeholder="Live Demo Link" className="input-style" value={live} onChange={e => setLive(e.target.value)} />
+            </div>
+
+            {/* --- TECH & STATS --- */}
+            <div className="space-y-4">
+                <input type="text" placeholder="Tech Stack (comma separated: React, Node, MongoDB)" className="input-style" value={techStack} onChange={e => setTechStack(e.target.value)} />
+                <input type="text" placeholder="Stats (e.g. Users: 100+, Speed: Fast)" className="input-style" value={stats} onChange={e => setStats(e.target.value)} />
+            </div>
+
+            <button type="submit" disabled={loading} className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold py-4 rounded-xl transition-all">
+                {loading ? 'Saving...' : (editId ? 'Update Project' : 'Create Project')}
             </button>
-          </form>
-        </div>
 
-        {/* LIST */}
-        <div className="space-y-4">
+            {editId && (
+                <button type="button" onClick={handleReset} className="w-full bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-xl transition-all">
+                    Cancel Edit
+                </button>
+            )}
+        </form>
+
+        {/* --- LIST --- */}
+        <div className="mt-12 space-y-4">
+            <h2 className="text-2xl font-bold text-slate-300">Existing Projects</h2>
             {projects.map(p => (
-                <div key={p._id} className={`flex justify-between p-4 rounded-xl items-center border transition-all ${editId === p._id ? 'bg-cyan-900/20 border-cyan-500' : 'bg-slate-900 border-white/5'}`}>
-                    <div className="flex gap-4 items-center">
+                <div key={p._id} className="bg-slate-800/30 p-4 rounded-xl flex items-center justify-between border border-slate-700">
+                    <div className="flex items-center gap-4">
                         <img src={p.thumbnail || p.image} alt={p.title} className="w-16 h-16 rounded-lg object-cover" />
                         <div>
-                            <h3 className="font-bold">{p.title}</h3>
+                            <h3 className="font-bold text-white">{p.title}</h3>
                             <span className="text-xs text-slate-500">{p.category}</span>
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        <button 
-                            onClick={() => handleEditClick(p)} 
-                            className="p-3 bg-slate-800 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
-                            title="Edit Project"
-                        >
-                            <FaEdit />
-                        </button>
-                        <button 
-                            onClick={() => handleDelete(p._id)} 
-                            className="p-3 bg-slate-800 text-red-500 rounded-lg hover:bg-red-600 hover:text-white transition-colors"
-                            title="Delete Project"
-                        >
-                            <FaTrash />
-                        </button>
+                        <button onClick={() => handleEditClick(p)} className="p-3 bg-slate-800 text-blue-400 rounded-lg hover:bg-blue-600 hover:text-white"><FaEdit /></button>
+                        <button onClick={() => handleDelete(p._id)} className="p-3 bg-slate-800 text-red-500 rounded-lg hover:bg-red-600 hover:text-white"><FaTrash /></button>
                     </div>
                 </div>
             ))}
         </div>
       </div>
-      <style>{`.input-style { width: 100%; background: #020617; border: 1px solid #334155; padding: 12px; border-radius: 12px; color: white; outline: none; }`}</style>
+      <style>{`.input-style { width: 100%; background: #020617; border: 1px solid #334155; padding: 12px; border-radius: 12px; color: white; outline: none; } .input-style:focus { border-color: #06b6d4; }`}</style>
     </div>
   );
 };

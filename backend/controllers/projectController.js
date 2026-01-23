@@ -29,105 +29,130 @@ const createProject = async (req, res) => {
     const host = req.get('host');
     const baseUrl = `${protocol}://${host}/`;
 
-    let thumbnailUrl = '';
+    // 1. THUMBNAIL LOGIC
+    // Pehle check karein agar User ne Direct Link diya hai (Best for Render)
+    let finalThumbnail = req.body.thumbnailUrl || '';
+
+    // Agar file upload ki hai (Temporary on Render), to use override karein
     if (req.files && req.files.thumbnail) {
-        thumbnailUrl = baseUrl + req.files.thumbnail[0].path.replace(/\\/g, "/");
+        finalThumbnail = baseUrl + req.files.thumbnail[0].path.replace(/\\/g, "/");
     }
 
+    // 2. GALLERY LOGIC
     let mediaArray = [];
+    
+    // (A) Agar Links diye hain (Comma separated)
+    if (req.body.galleryUrls) {
+        const urls = req.body.galleryUrls.split(',').map(url => url.trim()).filter(u => u);
+        const urlObjects = urls.map(url => ({
+            url: url,
+            type: 'image' // Default to image
+        }));
+        mediaArray = [...mediaArray, ...urlObjects];
+    }
+
+    // (B) Agar Files upload ki hain
     if (req.files && req.files.gallery) {
-        mediaArray = req.files.gallery.map(file => ({
+        const fileObjects = req.files.gallery.map(file => ({
             url: baseUrl + file.path.replace(/\\/g, "/"),
             type: file.mimetype.startsWith('video') ? 'video' : 'image'
         }));
+        mediaArray = [...mediaArray, ...fileObjects];
     }
 
-    const techStackArray = req.body.techStack ? req.body.techStack.split(',').map(item => item.trim()).filter(i => i) : [];
-    const featuresArray = req.body.features ? req.body.features.split('\n').map(item => item.trim()).filter(i => i) : [];
-    
-    let statsArray = [];
-    if(req.body.stats) {
-        statsArray = req.body.stats.split('\n').map(line => {
-            const [label, value] = line.split(':');
-            return (label && value) ? { label: label.trim(), value: value.trim() } : null;
-        }).filter(i => i !== null);
-    }
+    const project = new Project({
+      title: req.body.title,
+      category: req.body.category,
+      description: req.body.description,
+      github: req.body.github,
+      live: req.body.live,
+      client: req.body.client,
+      duration: req.body.duration,
+      role: req.body.role,
+      techStack: req.body.techStack ? JSON.parse(req.body.techStack) : [],
+      features: req.body.features ? JSON.parse(req.body.features) : [],
+      stats: req.body.stats ? JSON.parse(req.body.stats) : [],
+      challenge: req.body.challenge,
+      solution: req.body.solution,
+      codeSnippet: req.body.codeSnippet,
+      thumbnail: finalThumbnail,
+      image: finalThumbnail,       // Legacy support
+      heroImage: finalThumbnail,   // Legacy support
+      media: mediaArray
+    });
 
-    const projectData = {
-      ...req.body,
-      thumbnail: thumbnailUrl,
-      image: thumbnailUrl,
-      heroImage: thumbnailUrl,
-      media: mediaArray,
-      techStack: techStackArray,
-      features: featuresArray,
-      stats: statsArray
-    };
-
-    const project = new Project(projectData);
     const createdProject = await project.save();
     res.status(201).json(createdProject);
-
   } catch (error) {
     console.error(error);
     res.status(400).json({ message: error.message });
   }
 };
 
-// --- NEW: Update Project Function ---
 const updateProject = async (req, res) => {
   try {
-    const { id } = req.params;
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const baseUrl = `${protocol}://${host}/`;
+    const project = await Project.findById(req.params.id);
 
-    const project = await Project.findById(id);
-    if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
+    if (project) {
+        project.title = req.body.title || project.title;
+        project.category = req.body.category || project.category;
+        project.description = req.body.description || project.description;
+        project.github = req.body.github || project.github;
+        project.live = req.body.live || project.live;
+        project.client = req.body.client || project.client;
+        project.duration = req.body.duration || project.duration;
+        project.role = req.body.role || project.role;
+        project.challenge = req.body.challenge || project.challenge;
+        project.solution = req.body.solution || project.solution;
+        project.codeSnippet = req.body.codeSnippet || project.codeSnippet;
+
+        if (req.body.techStack) project.techStack = JSON.parse(req.body.techStack);
+        if (req.body.features) project.features = JSON.parse(req.body.features);
+        if (req.body.stats) project.stats = JSON.parse(req.body.stats);
+
+        const protocol = req.protocol;
+        const host = req.get('host');
+        const baseUrl = `${protocol}://${host}/`;
+
+        // --- 1. Update Thumbnail ---
+        // Agar URL diya hai to set karein
+        if (req.body.thumbnailUrl) {
+            project.thumbnail = req.body.thumbnailUrl;
+            project.image = req.body.thumbnailUrl;
+            project.heroImage = req.body.thumbnailUrl;
+        }
+        // Agar File di hai to overwrite karein
+        if (req.files && req.files.thumbnail) {
+            const newThumbnail = baseUrl + req.files.thumbnail[0].path.replace(/\\/g, "/");
+            project.thumbnail = newThumbnail;
+            project.image = newThumbnail;
+            project.heroImage = newThumbnail;
+        }
+
+        // --- 2. Update Gallery ---
+        // Add new URLs
+        if (req.body.galleryUrls) {
+            const urls = req.body.galleryUrls.split(',').map(url => url.trim()).filter(u => u);
+            const urlObjects = urls.map(url => ({
+                url: url,
+                type: 'image'
+            }));
+            project.media.push(...urlObjects);
+        }
+        // Add new Files
+        if (req.files && req.files.gallery) {
+            const newMedia = req.files.gallery.map(file => ({
+                url: baseUrl + file.path.replace(/\\/g, "/"),
+                type: file.mimetype.startsWith('video') ? 'video' : 'image'
+            }));
+            project.media.push(...newMedia);
+        }
+
+        const updatedProject = await project.save();
+        res.json(updatedProject);
+    } else {
+      res.status(404).json({ message: 'Project not found' });
     }
-
-    // 1. Update Basic Fields
-    const fields = ['title', 'category', 'description', 'github', 'live', 'client', 'duration', 'role', 'challenge', 'solution', 'codeSnippet'];
-    fields.forEach(field => {
-        if (req.body[field] !== undefined) project[field] = req.body[field];
-    });
-
-    // 2. Update Arrays (Convert strings back to arrays)
-    if (req.body.techStack) {
-        project.techStack = req.body.techStack.split(',').map(item => item.trim()).filter(i => i);
-    }
-    if (req.body.features) {
-        project.features = req.body.features.split('\n').map(item => item.trim()).filter(i => i);
-    }
-    if (req.body.stats) {
-        project.stats = req.body.stats.split('\n').map(line => {
-            const [label, value] = line.split(':');
-            return (label && value) ? { label: label.trim(), value: value.trim() } : null;
-        }).filter(i => i !== null);
-    }
-
-    // 3. Handle Thumbnail Update
-    if (req.files && req.files.thumbnail) {
-        const newThumbnail = baseUrl + req.files.thumbnail[0].path.replace(/\\/g, "/");
-        project.thumbnail = newThumbnail;
-        project.image = newThumbnail; // Legacy update
-        project.heroImage = newThumbnail; // Legacy update
-    }
-
-    // 4. Handle Gallery (Append New Files)
-    // Note: Is logic se purane files delete nahi honge, naye add ho jayenge.
-    if (req.files && req.files.gallery) {
-        const newMedia = req.files.gallery.map(file => ({
-            url: baseUrl + file.path.replace(/\\/g, "/"),
-            type: file.mimetype.startsWith('video') ? 'video' : 'image'
-        }));
-        project.media.push(...newMedia);
-    }
-
-    const updatedProject = await project.save();
-    res.json(updatedProject);
-
   } catch (error) {
     console.error(error);
     res.status(400).json({ message: error.message });
@@ -137,7 +162,6 @@ const updateProject = async (req, res) => {
 const deleteProject = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
-
     if (project) {
       await project.deleteOne();
       res.json({ message: 'Project removed' });
