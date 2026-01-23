@@ -13,7 +13,7 @@ const HackerTerminal = () => {
   const [historyPointer, setHistoryPointer] = useState(-1);
 
   const [logs, setLogs] = useState([
-    { type: 'system', text: 'Initializing KPCODETECH Kernel v2.0...' },
+    { type: 'system', text: 'Initializing LOGIXWAVEAI Kernel v2.0...' },
   ]);
 
   const inputRef = useRef(null);
