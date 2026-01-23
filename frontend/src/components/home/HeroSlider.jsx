@@ -369,13 +369,13 @@ const HeroSlider = () => {
                         {/* BUTTONS */}
                         <div className="flex flex-wrap gap-3 md:gap-4 lg:gap-5 justify-center lg:justify-start items-center w-full px-1 pb-10 lg:pb-0">
                           <a
-                            href="/brochure.pdf" // Public folder wali file ka path
-                            download="LogixWaveAI_Brochure.pdf" // Download hone par ye naam aayega
+                            href="/brochure.pdf" // ✅ Seedha public folder se uthayega
+                            download="LogixWaveAI_Brochure.pdf"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-block" // Layout maintain karne ke liye
+                            className="inline-block"
                           >
-                            {/* --- YOUR BUTTON COMPONENT --- */}
+                            {/* Magnetic Button ab sirf design ke liye hai */}
                             <MagneticButton
                               className={`group relative px-6 py-3 md:px-7 md:py-3.5 lg:px-8 lg:py-4 rounded-full bg-white text-black font-bold overflow-hidden cursor-pointer ${theme.shadow} shadow-lg shrink-0`}
                             >
