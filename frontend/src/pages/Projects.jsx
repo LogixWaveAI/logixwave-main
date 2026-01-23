@@ -16,7 +16,7 @@ const Projects = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/projects');
+        const { data } = await axios.get('https://logixwave-main-1.onrender.com/api/projects');
         // Data formatting for Card component (mapping _id to id, techStack to tags)
         const formattedData = data.map(p => ({
           ...p,

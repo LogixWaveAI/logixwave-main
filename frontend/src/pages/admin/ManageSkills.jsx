@@ -154,10 +154,10 @@ const ManageSkills = () => {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const skillsRes = await axios.get('http://localhost:5000/api/skills');
+            const skillsRes = await axios.get('https://logixwave-main-1.onrender.com/api/skills');
             setSkills(skillsRes.data);
 
-            const membersRes = await axios.get('http://localhost:5000/api/members');
+            const membersRes = await axios.get('https://logixwave-main-1.onrender.com/api/members');
             setMembers(membersRes.data);
 
             if (membersRes.data.length > 0) {
@@ -200,7 +200,7 @@ const ManageSkills = () => {
 
     try {
       await axios.post(
-        'http://localhost:5000/api/skills', 
+        'https://logixwave-main-1.onrender.com/api/skills', 
         formData, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -211,7 +211,7 @@ const ManageSkills = () => {
         owner: members.length > 0 ? members[0].name : ''
       });
       
-      const res = await axios.get('http://localhost:5000/api/skills');
+      const res = await axios.get('https://logixwave-main-1.onrender.com/api/skills');
       setSkills(res.data);
 
     } catch (error) {
@@ -229,10 +229,10 @@ const ManageSkills = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this skill?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/skills/${id}`, {
+      await axios.delete(`https://logixwave-main-1.onrender.com/api/skills/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const res = await axios.get('http://localhost:5000/api/skills');
+      const res = await axios.get('https://logixwave-main-1.onrender.com/api/skills');
       setSkills(res.data);
       setMessage('Skill Deleted!');
     } catch (error) {

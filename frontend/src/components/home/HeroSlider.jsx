@@ -121,7 +121,7 @@ const HeroSlider = () => {
   useEffect(() => {
     const fetchTeam = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/members');
+        const { data } = await axios.get('https://logixwave-main-1.onrender.com/api/members');
         setMembers(data);
       } catch (error) { console.error("API Error:", error); } 
       finally { setLoading(false); }

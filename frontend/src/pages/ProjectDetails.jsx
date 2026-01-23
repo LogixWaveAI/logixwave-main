@@ -56,7 +56,7 @@ const ProjectDetails = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/projects/${id}`);
+        const { data } = await axios.get(`https://logixwave-main-1.onrender.com/api/projects/${id}`);
         setProject(data);
         window.scrollTo(0, 0);
       } catch (error) {

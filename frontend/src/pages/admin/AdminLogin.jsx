@@ -16,7 +16,7 @@ const AdminLogin = () => {
 
     try {
       // Backend URL (Make sure ye sahi ho)
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', {
+      const { data } = await axios.post('https://logixwave-main-1.onrender.com/api/auth/login', {
         email,
         password,
       });

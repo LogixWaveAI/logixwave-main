@@ -31,7 +31,7 @@ const ManageTeam = () => {
 
   const fetchMembers = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/members');
+      const { data } = await axios.get('https://logixwave-main-1.onrender.com/api/members');
       setMembers(data);
     } catch (error) { console.error(error); }
   };
@@ -89,7 +89,7 @@ const ManageTeam = () => {
     try {
       if (editId) {
         // --- UPDATE LOGIC (PUT) ---
-        await axios.put(`http://localhost:5000/api/members/${editId}`, formData, {
+        await axios.put(`https://logixwave-main-1.onrender.com/api/members/${editId}`, formData, {
             headers: { 
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
@@ -99,7 +99,7 @@ const ManageTeam = () => {
         setEditId(null); // Exit edit mode
       } else {
         // --- CREATE LOGIC (POST) ---
-        await axios.post('http://localhost:5000/api/members', formData, {
+        await axios.post('https://logixwave-main-1.onrender.com/api/members', formData, {
             headers: { 
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
@@ -119,7 +119,7 @@ const ManageTeam = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this member?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/members/${id}`, {
+      await axios.delete(`https://logixwave-main-1.onrender.com/api/members/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchMembers();

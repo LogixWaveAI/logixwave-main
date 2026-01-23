@@ -68,7 +68,7 @@ const Contact = () => {
 
     try {
       // Backend URL
-      const response = await axios.post('http://localhost:5000/api/contact', formData);
+      const response = await axios.post('https://logixwave-main-1.onrender.com/api/contact', formData);
 
       if (response.status === 200) {
         setFormStatus('sent');

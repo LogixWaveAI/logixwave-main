@@ -78,7 +78,7 @@ const SkillsMatrix = () => {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/skills');
+        const { data } = await axios.get('https://logixwave-main-1.onrender.com/api/skills');
         
         const groupedSkills = data.reduce((acc, skill) => {
           const ownerName = skill.owner ? skill.owner.trim() : "Unknown";
