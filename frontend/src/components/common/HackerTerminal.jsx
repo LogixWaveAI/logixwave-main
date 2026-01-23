@@ -202,7 +202,7 @@ const HackerTerminal = () => {
             >
               <div className="flex items-center gap-2">
                 <FaTerminal className="text-green-500 text-xs" />
-                <span className="text-xs text-slate-300 font-mono font-bold">admin@kpcodetech:~</span>
+                <span className="text-xs text-slate-300 font-mono font-bold">admin@logixwaveai:~</span>
               </div>
               <div className="flex gap-3">
                 <button onClick={() => setIsOpen(false)} className="text-yellow-500 hover:text-yellow-400"><FaMinus size={10} /></button>

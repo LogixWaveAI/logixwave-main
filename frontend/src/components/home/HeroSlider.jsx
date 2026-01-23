@@ -343,7 +343,9 @@ const HeroSlider = () => {
                         {/* NAME */}
                         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[7.5rem] font-black leading-tight tracking-tighter mb-0 relative select-none pb-16">
                           <span
-                            className="block text-transparent bg-clip-text opacity-40 md:opacity-20"
+                            // 👇 UPDATE 1: Mobile pe 'text-white' aur 'opacity-100' kar diya (Solid dikhega)
+                            // Desktop (md) pe wapas 'text-transparent' aur 'opacity-20' (Outline style) rahega
+                            className="block text-white md:text-transparent bg-clip-text opacity-100 md:opacity-20"
                             style={{
                               WebkitTextStroke: `1px rgba(255,255,255,1)`,
                             }}
@@ -355,7 +357,9 @@ const HeroSlider = () => {
                             )}
                           </span>
                           <span
-                            className={`block bg-clip-text text-transparent bg-gradient-to-r ${theme.gradient} drop-shadow-[0_0_30px_rgba(0,0,0,0.4)] transform -translate-y-2 lg:-translate-y-4 relative`}
+                            // 👇 UPDATE 2: '-translate-y-2' hata diya mobile se, taaki naam overlap na kare
+                            // Sirf 'md' (Desktop) se upar overlap karega
+                            className={`block bg-clip-text text-transparent bg-gradient-to-r ${theme.gradient} drop-shadow-[0_0_30px_rgba(0,0,0,0.4)] transform md:-translate-y-2 lg:-translate-y-4 relative`}
                           >
                             {lastName}
                           </span>
