@@ -207,7 +207,7 @@ const About = () => {
           <StoryNode 
             side="left"
             date="Chapter 5 | The Crossroads"
-            title="The Placement Trap"
+            title="The Placement Pressure"
             subtitle="Sem 5: Society vs. Ambition"
             icon={<FaMugHot />}
             color="text-gray-400"
@@ -215,7 +215,7 @@ const About = () => {
             delay={0.5}
           >
             <p>
-              By our second year, we were already in the real world—<strong>Parth</strong> led with an internship, followed by <strong>Jay</strong>, <strong>Yashvi</strong>, and <strong>Pal</strong>, each gaining their own experience. When Semester 5 arrived, the noise of placements and packages grew louder. Families wanted security. Professors wanted safe paths. But looking at each other, we knew one thing for sure: <strong>we weren’t built to work for someone else.</strong>
+              By our second year, we were already in the real world—<strong>Parth</strong> led with an internship, followed by <strong>Jay</strong>, <strong>Yashvi</strong>, and <strong>Pal</strong>, each gaining their own experience. When Semester 5 arrived, the noise of placements and packages grew louder. Families wanted security. Professors wanted safe paths. But when we looked at each other, we knew our journey might be different—we wanted to create something of our own.
             </p>
 
 

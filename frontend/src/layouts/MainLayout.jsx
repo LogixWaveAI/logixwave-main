@@ -15,7 +15,6 @@ import ParticleBackground from '../components/common/ParticleBackground';
 // --- AUDIO SYSTEM ---
 import { AudioProvider } from '../context/AudioContext';
 import GlobalAudioPlayer from '../components/common/GlobalAudioPlayer';
-import WelcomeMusicModal from '../components/common/WelcomeMusicModal';
 
 const MainLayout = () => {
   return (
@@ -49,7 +48,6 @@ const MainLayout = () => {
         
         {/* 4. AUDIO SYSTEM */}
         <GlobalAudioPlayer /> 
-        <WelcomeMusicModal />
 
         {/* 5. BACKGROUND FX (Lowest Layer) */}
         
