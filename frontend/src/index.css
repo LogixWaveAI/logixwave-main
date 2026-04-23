@@ -74,12 +74,14 @@ h1, h2, h3, h4, h5, h6, .font-display {
     background: rgba(15, 23, 42, 0.92);
   }
 
-  /* 2. Kill all large CSS blur on background glow elements */
+  /* 2. KILL all decorative glow/blob circles on mobile
+        These are the hard visible circles Safari can't blur properly */
   .blur-\[150px\],
   .blur-\[120px\],
   .blur-\[100px\],
-  .blur-\[80px\] {
-    filter: none !important;
+  .blur-\[80px\],
+  .blur-\[60px\] {
+    display: none !important;
   }
 
   /* 3. Disable mix-blend-mode - causes GPU layer explosion on iOS */
@@ -106,3 +108,4 @@ h1, h2, h3, h4, h5, h6, .font-display {
     }
   }
 }
+
