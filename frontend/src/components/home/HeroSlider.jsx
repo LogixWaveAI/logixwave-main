@@ -211,6 +211,8 @@ const HeroSlider = () => {
   const spotlight = useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(255,255,255,0.03), transparent 80%)`;
 
   const handleMouseMove = (e) => {
+    // Fix iPhone lag: Disable continuous pointer calculation on mobile screens
+    if (typeof window !== "undefined" && window.innerWidth < 768) return;
     const { clientX, clientY } = e;
     mouseX.set(clientX);
     mouseY.set(clientY);
@@ -230,7 +232,7 @@ const HeroSlider = () => {
         style={{ background: spotlight }}
       />
 
-      <div className="absolute inset-0 z-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] pointer-events-none"></div>
+      <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"></div>
       
       <Swiper
         modules={[Autoplay, EffectCreative]}
@@ -257,7 +259,7 @@ const HeroSlider = () => {
             <SwiperSlide key={member._id}>
               {({ isActive }) => (
                 <div className="relative w-full h-full flex items-center lg:overflow-hidden overflow-y-auto overflow-x-hidden">
-                  <div className="container mx-auto px-4 sm:px-6 h-full flex flex-col-reverse lg:flex-row items-center justify-center relative pb-32 pt-0 lg:pt-0 lg:pb-24">
+                  <div className="container mx-auto px-4 sm:px-6 h-full flex flex-col-reverse lg:flex-row items-center justify-center relative pb-10 pt-0 lg:pt-0 lg:pb-24">
                     {/* --- LEFT: TYPOGRAPHY --- */}
                     <div className="w-full lg:w-[45%] z-40 flex flex-col justify-end lg:justify-center items-center lg:items-start text-center lg:text-left h-auto lg:h-full mt-[-20px] lg:mt-0 relative">
                       <motion.div
@@ -318,7 +320,7 @@ const HeroSlider = () => {
                         </p>
 
                         {/* BUTTONS */}
-                        <div className="flex flex-wrap gap-3 md:gap-4 lg:gap-5 justify-center lg:justify-start items-center w-full px-1 pb-10 lg:pb-0">
+                        <div className="flex flex-wrap gap-3 md:gap-4 lg:gap-5 justify-center lg:justify-start items-center w-full px-1 pb-4 lg:pb-0">
                           <a
                             href="/brochure.pdf"
                             download="LogixWaveAI_Brochure.pdf"

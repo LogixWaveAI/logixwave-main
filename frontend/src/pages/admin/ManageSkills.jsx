@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE from '../../utils/api';
 import { 
   FaTrash, FaPlus, FaArrowLeft, FaCode, FaPython, FaNodeJs, FaReact, 
   FaBrain, FaDatabase, FaMobileAlt, FaShieldAlt, FaTerminal, FaRobot, FaLock,
@@ -154,10 +155,10 @@ const ManageSkills = () => {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const skillsRes = await axios.get('https://logixwave-main-1.onrender.com/api/skills');
+            const skillsRes = await axios.get(`${API_BASE}/api/skills`);
             setSkills(skillsRes.data);
 
-            const membersRes = await axios.get('https://logixwave-main-1.onrender.com/api/members');
+            const membersRes = await axios.get(`${API_BASE}/api/members`);
             setMembers(membersRes.data);
 
             if (membersRes.data.length > 0) {
@@ -200,18 +201,18 @@ const ManageSkills = () => {
 
     try {
       await axios.post(
-        'https://logixwave-main-1.onrender.com/api/skills', 
+        '${API_BASE}/api/skills', 
         formData, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setMessage('Skill Added Successfully! 🎉'); 
+      setMessage('Skill Added Successfully! ðŸŽ‰'); 
       setFormData({
         ...initialFormState,
         owner: members.length > 0 ? members[0].name : ''
       });
       
-      const res = await axios.get('https://logixwave-main-1.onrender.com/api/skills');
+      const res = await axios.get(`${API_BASE}/api/skills`);
       setSkills(res.data);
 
     } catch (error) {
@@ -229,10 +230,10 @@ const ManageSkills = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this skill?')) return;
     try {
-      await axios.delete(`https://logixwave-main-1.onrender.com/api/skills/${id}`, {
+      await axios.delete(`${API_BASE}/api/skills/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const res = await axios.get('https://logixwave-main-1.onrender.com/api/skills');
+      const res = await axios.get(`${API_BASE}/api/skills`);
       setSkills(res.data);
       setMessage('Skill Deleted!');
     } catch (error) {

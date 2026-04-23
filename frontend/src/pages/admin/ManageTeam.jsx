@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE from '../../utils/api';
 import { FaTrash, FaArrowLeft, FaEdit, FaTimes } from 'react-icons/fa'; // FaEdit aur FaTimes add kiya
 import { Link } from 'react-router-dom';
 
@@ -31,7 +32,7 @@ const ManageTeam = () => {
 
   const fetchMembers = async () => {
     try {
-      const { data } = await axios.get('https://logixwave-main-1.onrender.com/api/members');
+      const { data } = await axios.get(`${API_BASE}/api/members`);
       setMembers(data);
     } catch (error) { console.error(error); }
   };
@@ -52,7 +53,7 @@ const ManageTeam = () => {
     
     // Scroll to top functionality
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    setMessage('Editing Mode: Update details below 👇');
+    setMessage('Editing Mode: Update details below ðŸ‘‡');
   };
 
   // --- CANCEL EDIT ---
@@ -89,23 +90,23 @@ const ManageTeam = () => {
     try {
       if (editId) {
         // --- UPDATE LOGIC (PUT) ---
-        await axios.put(`https://logixwave-main-1.onrender.com/api/members/${editId}`, formData, {
+        await axios.put(`${API_BASE}/api/members/${editId}`, formData, {
             headers: { 
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
             }
         });
-        setMessage('Member Updated Successfully! 🎉');
+        setMessage('Member Updated Successfully! ðŸŽ‰');
         setEditId(null); // Exit edit mode
       } else {
         // --- CREATE LOGIC (POST) ---
-        await axios.post('https://logixwave-main-1.onrender.com/api/members', formData, {
+        await axios.post(`${API_BASE}/api/members`, formData, {
             headers: { 
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
             }
         });
-        setMessage('Member Added Successfully! ✅');
+        setMessage('Member Added Successfully! âœ…');
       }
       
       resetForm();
@@ -119,7 +120,7 @@ const ManageTeam = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this member?')) return;
     try {
-      await axios.delete(`https://logixwave-main-1.onrender.com/api/members/${id}`, {
+      await axios.delete(`${API_BASE}/api/members/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchMembers();

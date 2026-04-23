@@ -8,40 +8,44 @@ const steps = [
     title: "Discovery & Intel",
     desc: "We decode your requirements and analyze market gaps. No assumptions, just data-driven strategy.",
     icon: <Search className="w-6 h-6" />,
-    color: "cyan",
+    colorClass: "text-cyan-400",
+    borderClass: "border-cyan-500/30",
   },
   {
     id: 2,
     title: "System Architecture",
     desc: "We engineer the blueprint. Database schemas, API endpoints, and scalable infrastructure planning.",
     icon: <PenTool className="w-6 h-6" />,
-    color: "fuchsia",
+    colorClass: "text-fuchsia-400",
+    borderClass: "border-fuchsia-500/30",
   },
   {
     id: 3,
     title: "Development Core",
     desc: "Our engineers execute the code. Clean, modular, and tested systems built on the MERN/Native stack.",
     icon: <Code2 className="w-6 h-6" />,
-    color: "blue",
+    colorClass: "text-blue-400",
+    borderClass: "border-blue-500/30",
   },
   {
     id: 4,
     title: "Launch & Scale",
     desc: "Deployment to cloud clusters (AWS/Vercel). We monitor, optimize, and scale as you grow.",
     icon: <Rocket className="w-6 h-6" />,
-    color: "emerald",
+    colorClass: "text-emerald-400",
+    borderClass: "border-emerald-500/30",
   },
 ];
 
 const TheBlueprint = () => {
   return (
-    <section className="py-24 bg-slate-950 relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-[#020617] relative overflow-hidden flex flex-col items-center">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
       <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
+        <div className="text-center max-w-3xl mx-auto mb-12 md:mb-20">
+          <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
             THE <span className="text-cyan-400">BLUEPRINT</span>
           </h2>
           <p className="text-slate-400 text-lg">
@@ -74,15 +78,14 @@ const TheBlueprint = () => {
               >
                 {/* Step Card */}
                 <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl hover:border-slate-600 transition-all duration-300 h-full relative z-10">
-                  {/* Icon Bubble */}
                   <div
-                    className={`w-14 h-14 rounded-full bg-slate-950 border border-${step.color}-500/30 flex items-center justify-center text-${step.color}-400 mb-6 mx-auto md:mx-0 shadow-[0_0_20px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-300`}
+                    className={`w-14 h-14 rounded-2xl bg-[#020617] border ${step.borderClass} flex items-center justify-center ${step.colorClass} mb-6 mx-auto md:mx-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}
                   >
                     {step.icon}
                   </div>
 
                   {/* Step Number */}
-                  <div className="absolute top-4 right-4 text-4xl font-black text-slate-800 select-none">
+                  <div className="absolute top-4 right-4 text-3xl md:text-4xl font-black text-slate-800/50 select-none font-display">
                     0{step.id}
                   </div>
 

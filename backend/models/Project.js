@@ -54,4 +54,6 @@ const projectSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+projectSchema.index({ category: 1, createdAt: -1 });
+
 module.exports = mongoose.model("Project", projectSchema);

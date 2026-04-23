@@ -102,13 +102,13 @@ const TechCard = ({ service, index }) => {
   return (
     <div 
       onMouseMove={onMouseMove}
-      className="group relative w-full h-[800px] perspective-1000"
+      className="group relative w-full h-auto min-h-[600px] lg:h-[750px] perspective-1000"
     >
       {/* GLOWING BORDER GRADIENT */}
       <div className={`absolute -inset-0.5 bg-gradient-to-br ${service.color} opacity-30 group-hover:opacity-100 blur transition duration-500 rounded-2xl`}></div>
       
       {/* MAIN CARD BODY */}
-      <div className="relative h-full bg-slate-950/90 backdrop-blur-xl border border-white/10 rounded-2xl p-8 flex flex-col overflow-hidden">
+      <div className="relative h-full bg-slate-950/90 backdrop-blur-xl border border-white/10 rounded-2xl p-6 md:p-8 flex flex-col overflow-hidden">
         
         {/* HOVER SPOTLIGHT */}
         <motion.div
@@ -163,7 +163,7 @@ const TechCard = ({ service, index }) => {
             {service.stats.map((stat, i) => (
                 <div key={i} className="bg-slate-900/50 border border-white/5 rounded-lg p-3 text-center group-hover:border-white/20 transition-colors">
                     <p className="text-[10px] uppercase tracking-wider text-slate-400 mb-1">{stat.label}</p>
-                    <p className={`text-2xl font-black bg-gradient-to-r ${service.color} bg-clip-text text-transparent`}>
+                    <p className={`text-xl md:text-2xl font-black bg-gradient-to-r ${service.color} bg-clip-text text-transparent`}>
                         <Counter value={stat.value} suffix={stat.suffix} />
                     </p>
                 </div>
@@ -209,18 +209,18 @@ const TechCard = ({ service, index }) => {
 // --- MAIN SECTION ---
 const TechCapabilities = () => {
   return (
-    <section className="relative py-32 bg-slate-950 overflow-hidden">
+    <section className="relative py-16 md:py-32 bg-slate-950 overflow-hidden">
       
       {/* VIBRANT BACKGROUND FX */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
       
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 pointer-events-none"></div>
+      <div className="absolute inset-0 opacity-20 brightness-100 contrast-150 pointer-events-none"></div>
 
       <div className="container mx-auto px-6 relative z-10">
         
         {/* HEADER */}
-        <div className="mb-24 text-center max-w-4xl mx-auto">
+        <div className="mb-16 md:mb-24 text-center max-w-4xl mx-auto">
              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -235,7 +235,7 @@ const TechCapabilities = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="text-5xl md:text-7xl font-black text-white tracking-tight mb-6"
+                className="text-4xl md:text-7xl font-black text-white tracking-tight mb-6"
              >
                 WE BUILD <br className="hidden md:block"/>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">

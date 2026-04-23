@@ -88,8 +88,8 @@ const MagicCursor = () => {
       }}
       animate={{
         scale: isClicking ? 0.8 : isHovering ? 1.8 : 1,
-        backgroundColor: isHovering ? 'rgba(34, 211, 238, 0.2)' : 'transparent',
-        borderColor: isHovering ? 'transparent' : '#22d3ee',
+        backgroundColor: isHovering ? 'rgba(34, 211, 238, 0.2)' : 'rgba(34, 211, 238, 0)',
+        borderColor: isHovering ? 'rgba(34, 211, 238, 0)' : '#22d3ee',
       }}
       transition={{ type: "tween", ease: "backOut", duration: 0.2 }}
     >

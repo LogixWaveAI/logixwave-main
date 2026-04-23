@@ -25,14 +25,12 @@ const Contact = () => {
   const whatsAppNumber = "919327352530";
   const whatsAppMessage = "Hello, I'd like to discuss a new project with LogixWaveAI. Could you please share more details?";
 
-  // --- ORIGINAL SOCIAL LINKS ADDED HERE ---
   const socialLinks = {
     github: "https://github.com/LogixWaveAI",
     linkedin: "https://www.linkedin.com/company/logixwaveai",
     instagram: "https://www.instagram.com/logixwaveai" 
   };
 
-  // Form data state
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -40,7 +38,6 @@ const Contact = () => {
     message: '',
   });
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -54,11 +51,9 @@ const Contact = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Final Validation
     if (!EMAIL_REGEX.test(formData.email)) {
         setEmailError('Invalid email format.');
         return; 
@@ -67,18 +62,11 @@ const Contact = () => {
     setFormStatus('sending');
 
     try {
-      // Backend URL
       const response = await axios.post('https://logixwave-main-1.onrender.com/api/contact', formData);
 
       if (response.status === 200) {
         setFormStatus('sent');
-        // Reset Form
-        setFormData({ 
-            name: '', 
-            email: '', 
-            subject: '', 
-            message: '' 
-        }); 
+        setFormData({ name: '', email: '', subject: '', message: '' }); 
       } else {
         setFormStatus('failed');
       }
@@ -88,215 +76,113 @@ const Contact = () => {
       setFormStatus('failed');
     }
 
-    // Reset status after 3 seconds
     setTimeout(() => setFormStatus('idle'), 3000);
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 pt-24 md:pt-32 pb-16 md:pb-20 px-4 md:px-6 relative overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-[#020617] pt-24 md:pt-32 pb-16 md:pb-24 px-5 md:px-6 relative overflow-x-hidden font-sans">
       
       {/* 1. Animated Cyber Grid Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f46e52e_1px,transparent_1px),linear-gradient(to_bottom,#4f46e52e_1px,transparent_1px)] bg-[size:3rem_3rem] md:bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:3rem_3rem] md:bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
         
         {/* Glowing Orbs */}
-        <div className="absolute top-20 left-0 md:left-10 w-48 md:w-72 h-48 md:h-72 bg-purple-500/20 rounded-full blur-[60px] md:blur-[100px]" />
-        <div className="absolute bottom-20 right-0 md:right-10 w-64 md:w-96 h-64 md:h-96 bg-cyan-500/20 rounded-full blur-[60px] md:blur-[100px]" />
+        <div className="absolute top-20 left-[-10%] w-64 md:w-96 h-64 md:h-96 bg-sky-600/10 rounded-full blur-[80px] md:blur-[120px]" />
+        <div className="absolute bottom-20 right-[-10%] w-72 md:w-[500px] h-72 md:h-[500px] bg-indigo-600/10 rounded-full blur-[80px] md:blur-[120px]" />
       </div>
 
       <div className="container mx-auto max-w-7xl relative z-10">
         
         {/* Header Section */}
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center mb-12 md:mb-20">
           <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-7xl font-black text-white mb-4 md:mb-6 tracking-tight leading-tight"
+            initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
+            className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight leading-tight font-display"
           >
-            Let's Start a <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Revolution</span>
+            Let's Start a <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-500 to-purple-500">Dialogue</span>
           </motion.h1>
-          <p className="text-slate-400 max-w-2xl mx-auto text-base md:text-lg px-2">
-            Have a crazy idea? We have the tech to build it. Reach out and let's architect your digital future.
+          <p className="text-slate-400 max-w-2xl mx-auto text-base md:text-xl font-light px-4">
+            Have a crazy idea? We have the architecture to build it. Reach out and let's engineer your digital future.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           
-          {/* Left Column: Contact Info & Socials */}
+          {/* Left Column: Contact Info */}
           <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}
             className="space-y-8 md:space-y-10 order-2 lg:order-1"
           >
-            {/* Contact Cards List */}
-            <div className="space-y-4 md:space-y-6">
-              <ContactCard 
-                icon={<FaPhoneAlt />} 
-                title="Talk to Us" 
-                value="+91 93273 52530" 
-                color="text-green-400"
-                delay={0}
-              />
-              <ContactCard 
-                icon={<FaEnvelope />} 
-                title="Mail Us" 
-                value="contact@logixwaveai.com" 
-                color="text-blue-400"
-                delay={0.1}
-              />
-              <ContactCard 
-                icon={<FaMapMarkerAlt />} 
-                title="Visit HQ" 
-                value="Surat, Gujarat, India" 
-                color="text-red-400"
-                delay={0.2}
-              />
+            <div className="space-y-4 sm:space-y-6">
+              <ContactCard icon={<FaPhoneAlt />} title="Direct Line" value="+91 93273 52530" color="text-sky-400" bgColor="bg-sky-500/10" delay={0} />
+              <ContactCard icon={<FaEnvelope />} title="Email Transmission" value="contact@logixwaveai.com" color="text-indigo-400" bgColor="bg-indigo-500/10" delay={0.1} />
+              <ContactCard icon={<FaMapMarkerAlt />} title="Headquarters" value="Surat, Gujarat, India" color="text-purple-400" bgColor="bg-purple-500/10" delay={0.2} />
             </div>
             
-            {/* WHATSAPP BUTTON */}
             <motion.a
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
                 href={`https://wa.me/${whatsAppNumber}?text=${encodeURIComponent(whatsAppMessage)}`}
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="w-full inline-flex items-center justify-center gap-3 py-3 md:py-4 bg-green-500 text-white font-bold rounded-2xl transition-all hover:bg-green-600 hover:scale-[1.02] shadow-[0_0_20px_rgba(16,185,129,0.4)] text-base md:text-lg"
+                target="_blank" rel="noopener noreferrer" 
+                className="w-full inline-flex items-center justify-center gap-3 py-4 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold rounded-2xl transition-all hover:bg-emerald-500 hover:text-white hover:scale-[1.02] shadow-[0_0_20px_rgba(16,185,129,0.1)] text-base"
             >
-                <FaWhatsapp size={22} /> Chat with Us on WhatsApp
+                <FaWhatsapp size={22} /> Initiate WhatsApp Channel
             </motion.a>
 
-            {/* Social Connect Hub (Twitter Removed, Links Added) */}
-            <div className="p-6 md:p-8 rounded-3xl bg-slate-900/50 border border-white/10 backdrop-blur-md text-center md:text-left">
-              <h3 className="text-white font-bold mb-6 text-lg md:text-xl">Connect on Socials</h3>
-              <div className="flex justify-center md:justify-start gap-4">
-                <SocialBtn 
-                    icon={<FaGithub />} 
-                    href={socialLinks.github} 
-                    color="hover:bg-gray-800" 
-                />
-                <SocialBtn 
-                    icon={<FaLinkedin />} 
-                    href={socialLinks.linkedin} 
-                    color="hover:bg-blue-700" 
-                />
-                <SocialBtn 
-                    icon={<FaInstagram />} 
-                    href={socialLinks.instagram} 
-                    color="hover:bg-pink-600" 
-                />
+            <div className="p-6 md:p-8 rounded-3xl bg-slate-900/50 border border-white/5 backdrop-blur-xl text-center sm:text-left">
+              <h3 className="text-white font-display font-semibold mb-6 text-lg sm:text-xl">Network Architectures</h3>
+              <div className="flex justify-center sm:justify-start gap-4">
+                <SocialBtn icon={<FaGithub />} href={socialLinks.github} />
+                <SocialBtn icon={<FaLinkedin />} href={socialLinks.linkedin} />
+                <SocialBtn icon={<FaInstagram />} href={socialLinks.instagram} />
               </div>
             </div>
           </motion.div>
 
           {/* Right Column: Holographic Form */}
           <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
             className="relative order-1 lg:order-2"
           >
-            {/* Form Glow Border */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-[2rem] blur opacity-20"></div>
+            <div className="absolute -inset-1 bg-gradient-to-br from-sky-500/20 to-purple-600/20 rounded-[2.5rem] blur-xl opacity-50"></div>
             
             <form 
               onSubmit={handleSubmit}
-              className="relative bg-slate-900/80 backdrop-blur-xl p-6 md:p-10 rounded-[1.8rem] border border-white/10 shadow-2xl"
+              className="relative bg-slate-900/80 backdrop-blur-2xl p-6 sm:p-8 md:p-10 rounded-[2rem] border border-white/10 shadow-2xl"
             >
-              <h3 className="text-xl md:text-2xl font-bold text-white mb-6 md:mb-8">Send a Message</h3>
+              <h3 className="text-2xl sm:text-3xl font-display font-bold text-white mb-8">Establish Connection</h3>
               
-              <div className="space-y-5 md:space-y-6">
+              <div className="space-y-5 sm:space-y-6">
                 
-                {/* Inputs Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-                  <InputGroup 
-                    label="Name" 
-                    placeholder="Your Full Name" 
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-                  <InputGroup 
-                    label="Email" 
-                    placeholder="you@company.com" 
-                    type="email" 
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    error={emailError} 
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                  <InputGroup label="Entity Name" placeholder="Your Full Name" name="name" value={formData.name} onChange={handleChange} />
+                  <InputGroup label="Comms Channel" placeholder="you@company.com" type="email" name="email" value={formData.email} onChange={handleChange} error={emailError} />
                 </div>
                 
-                {/* Subject Input */}
-                <InputGroup 
-                  label="Subject" 
-                  placeholder="I want to build an AI App..." 
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                />
+                <InputGroup label="Subject Header" placeholder="Project details or scope..." name="subject" value={formData.subject} onChange={handleChange} />
                 
-                {/* Message Textarea */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-400 ml-1">Message</label>
+                <div className="space-y-2 flex flex-col">
+                  <label className="text-xs font-semibold text-slate-400 ml-1 uppercase tracking-wider">Payload</label>
                   <textarea 
-                    rows="4" 
-                    name="message" 
-                    value={formData.message} 
-                    onChange={handleChange} 
-                    className="w-full bg-slate-950/50 border border-slate-700 rounded-xl px-4 md:px-5 py-3 md:py-4 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all resize-none placeholder:text-slate-600 text-sm md:text-base"
-                    placeholder="Tell us about your project timeline and budget..."
-                    required
+                    rows="4" name="message" value={formData.message} onChange={handleChange} 
+                    className="w-full bg-[#020617]/50 border border-slate-800 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all resize-none placeholder:text-slate-600 text-sm"
+                    placeholder="Describe your architecture requirements..." required
                   ></textarea>
                 </div>
 
-                {/* Submit Button */}
                 <button 
-                  type="submit" 
-                  disabled={formStatus === 'sending' || !!emailError} 
-                  className={`w-full py-3 md:py-4 rounded-xl font-bold text-base md:text-lg transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden relative group ${
-                    formStatus === 'sent' 
-                      ? 'bg-green-500 text-white' 
-                      : formStatus === 'failed'
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:shadow-[0_0_20px_rgba(6,182,212,0.4)]'
+                  type="submit" disabled={formStatus === 'sending' || !!emailError} 
+                  className={`w-full py-4 rounded-xl font-bold text-sm uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden relative group mt-4 ${
+                    formStatus === 'sent' ? 'bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)]' 
+                    : formStatus === 'failed' ? 'bg-rose-500 text-white'
+                    : 'bg-white text-slate-950 hover:bg-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]'
                   }`}
                 >
                   <div className="relative z-10 flex items-center gap-2">
-                    {formStatus === 'idle' && (
-                      <>
-                        <span>Launch Message</span>
-                        <FaPaperPlane className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                      </>
-                    )}
-                    
-                    {formStatus === 'sending' && (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        <span>Transmitting...</span>
-                      </>
-                    )}
-
-                    {formStatus === 'sent' && (
-                      <>
-                        <FaCheckCircle className="text-xl" />
-                        <span>Message Received!</span>
-                      </>
-                    )}
-                    
-                    {formStatus === 'failed' && (
-                      <>
-                        <FaTimes className="text-xl" /> 
-                        <span>Failed to Send!</span>
-                      </>
-                    )}
+                    {formStatus === 'idle' && (<><span>Transmit Request</span><FaPaperPlane className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" /></>)}
+                    {formStatus === 'sending' && (<><div className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin"></div><span>Transmitting...</span></>)}
+                    {formStatus === 'sent' && (<><FaCheckCircle className="text-lg" /><span>Transmission Received</span></>)}
+                    {formStatus === 'failed' && (<><FaTimes className="text-lg" /><span>Transmission Failed</span></>)}
                   </div>
-
-                  {/* Shine Effect */}
-                  {formStatus === 'idle' && (
-                    <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 group-hover:animate-shine" />
-                  )}
                 </button>
               </div>
             </form>
@@ -310,53 +196,39 @@ const Contact = () => {
 
 // --- SUB-COMPONENTS ---
 
-// Fixed ContactCard with Text Wrapping logic
-const ContactCard = ({ icon, title, value, color, delay }) => (
+const ContactCard = ({ icon, title, value, color, bgColor, delay }) => (
   <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: 0.5 }}
-    className="flex items-center gap-4 md:gap-5 p-4 md:p-6 rounded-2xl bg-slate-900/50 border border-white/5 hover:border-white/10 hover:bg-slate-800/50 transition-all group cursor-default w-full"
+    initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay, duration: 0.5 }}
+    className="flex items-center gap-4 sm:gap-5 p-4 sm:p-5 rounded-2xl bg-slate-900/40 border border-white/5 hover:border-white/10 transition-all group w-full"
   >
-    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full bg-slate-950 flex items-center justify-center text-xl md:text-2xl ${color} shadow-lg border border-white/5 group-hover:scale-110 transition-transform shrink-0`}>
+    <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl shrink-0 ${color} ${bgColor} border border-white/5 group-hover:scale-110 transition-transform`}>
       {icon}
     </div>
-    
-    {/* Added flex-1 and min-w-0 to fix text truncation issue on mobile */}
     <div className="flex-1 min-w-0">
-      <h4 className="text-slate-400 text-xs md:text-sm font-medium uppercase tracking-wider mb-1">{title}</h4>
-      {/* Added break-words to handle long emails properly */}
-      <p className="text-white text-sm md:text-lg font-semibold group-hover:text-cyan-400 transition-colors break-words leading-tight">
-        {value}
-      </p>
+      <h4 className="text-slate-500 text-[10px] sm:text-xs font-semibold uppercase tracking-widest mb-1">{title}</h4>
+      <p className="text-white text-sm sm:text-base font-semibold group-hover:text-sky-400 transition-colors break-words leading-tight">{value}</p>
     </div>
   </motion.div>
 );
 
 const InputGroup = ({ label, placeholder, type = "text", name, value, onChange, error }) => (
-  <div className="space-y-2">
-    <label className="text-sm font-medium text-slate-400 ml-1">{label}</label>
+  <div className="space-y-2 flex flex-col">
+    <label className="text-xs font-semibold text-slate-400 ml-1 uppercase tracking-wider">{label}</label>
     <input 
-      type={type} 
-      name={name}
-      value={value}
-      onChange={onChange}
-      required
-      className={`w-full bg-slate-950/50 rounded-xl px-4 md:px-5 py-3 md:py-4 text-white focus:outline-none focus:ring-1 transition-all placeholder:text-slate-600 text-sm md:text-base ${
-        error ? 'border border-red-500 focus:border-red-500 focus:ring-red-500' : 'border border-slate-700 focus:border-cyan-500 focus:ring-cyan-500'
+      type={type} name={name} value={value} onChange={onChange} required
+      className={`w-full bg-[#020617]/50 rounded-xl px-4 py-3 sm:py-4 text-white focus:outline-none focus:ring-1 transition-all placeholder:text-slate-600 text-sm ${
+        error ? 'border border-rose-500 focus:border-rose-500 focus:ring-rose-500' : 'border border-slate-800 focus:border-sky-500 focus:ring-sky-500'
       }`}
       placeholder={placeholder}
     />
-    {error && <p className="text-red-400 text-xs mt-1 ml-1">{error}</p>}
+    {error && <p className="text-rose-400 text-xs mt-1 ml-1 font-medium">{error}</p>}
   </div>
 );
 
-const SocialBtn = ({ icon, href, color }) => (
+const SocialBtn = ({ icon, href }) => (
   <a 
-    href={href} 
-    target="_blank" 
-    rel="noopener noreferrer"
-    className={`w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-950 border border-white/10 flex items-center justify-center text-slate-400 text-lg md:text-xl transition-all hover:text-white hover:-translate-y-1 ${color}`}
+    href={href} target="_blank" rel="noopener noreferrer"
+    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#020617] border border-white/10 flex items-center justify-center text-slate-400 text-lg sm:text-xl transition-all hover:text-white hover:border-sky-500 hover:shadow-[0_0_15px_rgba(14,165,233,0.3)] hover:-translate-y-1`}
   >
     {icon}
   </a>

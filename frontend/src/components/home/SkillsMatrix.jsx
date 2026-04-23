@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import API_BASE from '../../utils/api';
 
 // --- SAFE IMPORTS (No Risky New Icons) ---
 import { 
@@ -78,7 +79,7 @@ const SkillsMatrix = () => {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const { data } = await axios.get('https://logixwave-main-1.onrender.com/api/skills');
+        const { data } = await axios.get(`${API_BASE}/api/skills`);
         
         const groupedSkills = data.reduce((acc, skill) => {
           const ownerName = skill.owner ? skill.owner.trim() : "Unknown";
@@ -118,7 +119,7 @@ const SkillsMatrix = () => {
   }
 
   return (
-    <section className="py-20 md:py-24 bg-[#020617] relative min-h-screen">
+    <section className="pt-8 pb-20 md:py-24 bg-[#020617] relative min-h-screen">
       
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
@@ -142,7 +143,7 @@ const SkillsMatrix = () => {
         {/* Tab Selection (Scrollable on Mobile) */}
         {owners.length > 0 ? (
             <div className="flex justify-center mb-10 md:mb-16">
-              <div className="bg-slate-900/50 p-1 md:p-1.5 rounded-full border border-white/5 flex flex-wrap justify-center gap-2 backdrop-blur-md">
+              <div className="bg-slate-900/50 p-1.5 md:p-1.5 rounded-2xl md:rounded-full border border-white/5 flex flex-wrap justify-center gap-2 md:gap-2 backdrop-blur-md">
                 {owners.map((name) => (
                   <button
                     key={name}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE from '../../utils/api';
 import { FaLock, FaUserShield  } from 'react-icons/fa';
 
 
@@ -16,7 +17,7 @@ const AdminLogin = () => {
 
     try {
       // Backend URL (Make sure ye sahi ho)
-      const { data } = await axios.post('https://logixwave-main-1.onrender.com/api/auth/login', {
+      const { data } = await axios.post(`${API_BASE}/api/auth/login`, {
         email,
         password,
       });
@@ -78,7 +79,7 @@ const AdminLogin = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all pl-10"
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 required
               />
               <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 text-sm" />

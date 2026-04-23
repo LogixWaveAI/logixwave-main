@@ -32,4 +32,6 @@ const skillSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
+skillSchema.index({ owner: 1 });
+
 module.exports = mongoose.model('Skill', skillSchema);

@@ -162,7 +162,7 @@ const HackerTerminal = () => {
             fixed z-50 bg-slate-900 border border-green-500/50 text-green-500 rounded-full shadow-[0_0_20px_rgba(34,197,94,0.4)] backdrop-blur-md flex items-center justify-center
             
             /* MOBILE: Bottom-Right, standard FAB position */
-            bottom-6 right-4 h-12 w-12
+            bottom-6 right-4 h-10 w-10 md:h-12 md:w-12
             
             /* DESKTOP: Bottom-Right, aligned with layout */
             md:bottom-6 md:right-6 md:h-14 md:w-14

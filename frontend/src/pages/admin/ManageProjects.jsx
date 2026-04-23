@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE from '../../utils/api';
 import { FaTrash, FaPlus, FaArrowLeft, FaVideo, FaImage, FaTimes, FaEdit } from 'react-icons/fa'; // FaEdit add kiya
 import { Link } from 'react-router-dom';
 
@@ -37,7 +38,7 @@ const ManageProjects = () => {
 
   const fetchProjects = async () => {
     try {
-      const { data } = await axios.get('https://logixwave-main-1.onrender.com/api/projects');
+      const { data } = await axios.get(`${API_BASE}/api/projects`);
       setProjects(data);
     } catch (error) { console.error(error); }
   };
@@ -129,17 +130,17 @@ const ManageProjects = () => {
     try {
       if (editId) {
          // --- UPDATE LOGIC ---
-         await axios.put(`https://logixwave-main-1.onrender.com/api/projects/${editId}`, formData, {
+         await axios.put(`${API_BASE}/api/projects/${editId}`, formData, {
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
          });
-         setMessage('Project Updated Successfully! 🎉');
+         setMessage('Project Updated Successfully! ðŸŽ‰');
          setEditId(null);
       } else {
          // --- CREATE LOGIC ---
-         await axios.post('https://logixwave-main-1.onrender.com/api/projects', formData, {
+         await axios.post(`${API_BASE}/api/projects`, formData, {
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
          });
-         setMessage('Project Added Successfully! 🚀');
+         setMessage('Project Added Successfully! ðŸš€');
       }
       
       resetForm();
@@ -153,7 +154,7 @@ const ManageProjects = () => {
   const handleDelete = async (id) => {
       if (!window.confirm('Delete project?')) return;
       try {
-          await axios.delete(`https://logixwave-main-1.onrender.com/api/projects/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+          await axios.delete(`${API_BASE}/api/projects/${id}`, { headers: { Authorization: `Bearer ${token}` } });
           fetchProjects();
       } catch (err) { console.error(err); }
   };
@@ -253,7 +254,7 @@ const ManageProjects = () => {
             <textarea value={codeSnippet} onChange={e => setCodeSnippet(e.target.value)} placeholder="Code Snippet (Optional)" rows="4" className="md:col-span-2 input-style font-mono text-xs" />
 
             <button type="submit" disabled={loading} className={`md:col-span-2 w-full py-4 rounded-xl font-bold text-lg transition-all ${editId ? 'bg-green-600 hover:bg-green-500' : 'bg-cyan-600 hover:bg-cyan-500'}`}>
-                {loading ? 'Processing...' : (editId ? 'Update Project' : '🚀 Launch Project')}
+                {loading ? 'Processing...' : (editId ? 'Update Project' : 'ðŸš€ Launch Project')}
             </button>
           </form>
         </div>

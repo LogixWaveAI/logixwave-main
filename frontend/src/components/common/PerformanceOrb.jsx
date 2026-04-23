@@ -57,11 +57,11 @@ const PerformanceOrb = () => {
       
       onClick={!isOpen ? () => setIsOpen(true) : undefined} 
       
-      className={`fixed bottom-6 left-6 z-40 p-4 shadow-2xl transition-all duration-300 cursor-grab active:cursor-grabbing 
+      className={`fixed bottom-6 left-4 md:left-6 z-40 p-2 md:p-4 shadow-2xl transition-all duration-300 cursor-grab active:cursor-grabbing flex flex-col 
         ${isOpen 
             ? 'w-60 h-auto rounded-2xl bg-slate-900/70 backdrop-blur-xl border border-cyan-500/30' 
             // UPDATED SIZE CLASSES HERE:
-            : 'h-12 w-12 md:h-14 md:w-14 rounded-full bg-cyan-600 shadow-[0_0_20px_rgba(6,182,212,0.8)] flex items-center justify-center cursor-pointer'
+            : 'h-10 w-10 md:h-14 md:w-14 rounded-full bg-cyan-600 shadow-[0_0_20px_rgba(6,182,212,0.8)] flex items-center justify-center cursor-pointer'
         }`}
     >
       <AnimatePresence mode="wait">

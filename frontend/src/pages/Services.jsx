@@ -13,8 +13,8 @@ const Services = () => {
       </div>
       
       {/* 2. SKILLS MATRIX */}
-      {/* Compact Padding: py-6 (Mobile) | py-24 (Desktop) */}
-      <div className="py-6 md:py-24 px-4 md:px-0">
+      {/* Compact Padding: py-0 (Mobile) | py-24 (Desktop) */}
+      <div className="py-0 md:py-24 px-4 md:px-0">
         <SkillsMatrix />
       </div>
 
