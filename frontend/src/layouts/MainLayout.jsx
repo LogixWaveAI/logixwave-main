@@ -30,7 +30,7 @@ const MainLayout = () => {
 
   return (
     <AudioProvider>
-      <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-cyan-500 selection:text-white cursor-none relative overflow-x-hidden">
+      <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-cyan-500 selection:text-white  relative overflow-x-hidden">
         {/* 1. UTILITIES */}
         <MagicCursor />
         <ContextMenu />
