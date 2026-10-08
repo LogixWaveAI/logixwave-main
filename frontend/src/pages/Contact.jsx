@@ -114,7 +114,7 @@ const Contact = () => {
             className="space-y-8 md:space-y-10 order-2 lg:order-1"
           >
             <div className="space-y-4 sm:space-y-6">
-              <ContactCard icon={<FaPhoneAlt />} title="Direct Line" value="+91 93273 52530" color="text-sky-400" bgColor="bg-sky-500/10" delay={0} />
+              <ContactCard icon={<FaPhoneAlt />} title="Direct Line" value="+91 92654 03119" color="text-sky-400" bgColor="bg-sky-500/10" delay={0} />
               <ContactCard icon={<FaEnvelope />} title="Email Transmission" value="contact@logixwaveai.com" color="text-indigo-400" bgColor="bg-indigo-500/10" delay={0.1} />
               <ContactCard icon={<FaMapMarkerAlt />} title="Headquarters" value="Surat, Gujarat, India" color="text-purple-400" bgColor="bg-purple-500/10" delay={0.2} />
             </div>
