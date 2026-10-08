@@ -206,7 +206,7 @@ const Home = () => {
       </section>
 
       {/* --- THE TEAM --- */}
-      <section className="py-16 md:py-24 px-5 sm:px-8 relative z-10 bg-[#020617]">
+      {/* <section className="py-16 md:py-24 px-5 sm:px-8 relative z-10 bg-[#020617]">
         <div className="container mx-auto max-w-7xl">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn} className="text-center mb-12 md:mb-20">
             <h2 className="text-3xl md:text-5xl font-bold font-display mb-4 md:mb-6 tracking-tight">The <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-indigo-500">Architects</span></h2>
@@ -220,7 +220,7 @@ const Home = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent opacity-80 z-10"></div>
                   <img src={member.image} alt={member.name} className="w-full h-full object-cover object-top filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" loading="lazy" />
                   
-                  {/* Hover Socials */}
+                 
                   <div className="absolute inset-x-0 bottom-6 z-20 flex justify-center gap-3 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                     <a href={member.linkedin} className="w-10 h-10 rounded-full bg-white text-slate-950 flex items-center justify-center hover:bg-sky-400 hover:text-white transition-colors shadow-lg"><FaLinkedin /></a>
                     <a href={member.github} className="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center border border-white/20 hover:bg-white hover:text-slate-950 transition-colors shadow-lg"><FaGithub /></a>
@@ -235,7 +235,7 @@ const Home = () => {
             ))}
           </motion.div>
         </div>
-      </section>
+      </section> */}
 
       {/* --- EXTENDED COMPONENTS --- */}
       <AgenticAIService />
